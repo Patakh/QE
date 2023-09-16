@@ -26,21 +26,21 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Vertical" Grid.Column="0">
-                <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="Transparent" Width="250"> 
+                <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="250"> 
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                         Оценить качество обслуживания
                     </TextBlock>
                 </Button> 
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="1">
-                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="Transparent" Width="250">
+                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="250">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                       Получить информацию о талоне
                     </TextBlock>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="2">
-                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="Transparent" Width="250">
+                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="250">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                       Регистрация по предворительной записи
                     </TextBlock>
@@ -50,11 +50,11 @@
         </Grid>
         
         <!-- Область содержимого -->
-        <Border Grid.Row="1" BorderBrush="#eee" BorderThickness="1" Background="#eee" VerticalAlignment="Center" >
-            <StackPanel>
-                <StackPanel x:Name="menu" Orientation="Horizontal" VerticalAlignment="Center" Height="94">
+        <Border Grid.Row="1" BorderBrush="#eee" BorderThickness="1" Background="#fff" VerticalAlignment="Center" >
+            <StackPanel x:Name="BodyWindow"> 
+                <StackPanel x:Name="Menu" Orientation="Horizontal" VerticalAlignment="Center" Height="Auto">
                 </StackPanel>
-                <StackPanel x:Name="buttons" Orientation="Horizontal" VerticalAlignment="Center" Height="295">
+                <StackPanel x:Name="buttons" Orientation="Horizontal" VerticalAlignment="Center" Height="Auto">
                 </StackPanel>
             </StackPanel>
         </Border>

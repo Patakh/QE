@@ -34,6 +34,7 @@ using System.Windows.Input;
 using FastReport.DataVisualization.Charting;
 using System.Threading;
 using System.Windows.Controls.Primitives;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace QE
 {
@@ -46,17 +47,17 @@ namespace QE
         {
             InitializeComponent();
             //настройки главного окна
-            this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "/img/icon-eq.png", System.UriKind.Absolute));
-            Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+            this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin","") + "/img/icon-eq.png", System.UriKind.Absolute));
+            Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             AllowDrop = false;
             AllowsTransparency = false;
             WindowStyle = WindowStyle.None;
-            PreviewKeyDown += HandleKeyPress;
-            /*GridMain.Background = new ImageBrush
+            PreviewKeyDown += HandleKeyPress; 
+            ImageFooter.Background = new ImageBrush
             {
-                ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "/img/icon-eq.png", System.UriKind.Absolute))
-            };*/
+                ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/footer_img.png", System.UriKind.Absolute))
+            };
 
             //подключение к базе
             EqContext eqContext = new EqContext();
@@ -74,23 +75,18 @@ namespace QE
             Title = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).TerminalName;
             int Btn_idx = 1;
 
-            //Заголовок
-            StackPanel stackPanelHeader = new StackPanel();
-            stackPanelHeader.Margin = new Thickness(0, 18, 0, 0);
-            TextBlock textBlock = new TextBlock();
-            textBlock.FontFamily = new FontFamily("Area");
-            textBlock.FontSize = 60;
-            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
-            textBlock.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+            // Офис
+            HeaderTextBlock.FontFamily = new FontFamily("Area");
+            HeaderTextBlock.FontSize = 60;
+            HeaderTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
+            HeaderTextBlock.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+             
 
-            stackPanelHeader.Children.Add(textBlock);
-            GridMain.Children.Add(stackPanelHeader); 
             eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).ToList().ForEach(b =>
-             {
-                  
-
+             { 
                  if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                  {
+                      
                      //создаем кнопку перехода на меню
                      Button btnMenu = new Button();
                      DropShadowEffect shadowEffect = new DropShadowEffect();
@@ -109,8 +105,7 @@ namespace QE
                      btnMenu.FontFamily = new FontFamily("Area");
                      btnMenu.FontSize = 25;
                      btnMenu.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                     btnMenu.TabIndex = 999;
-
+                     btnMenu.TabIndex = 999; 
                      ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
                      FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
                      border.Name = "border";
@@ -124,91 +119,70 @@ namespace QE
                      border.AppendChild(contentPresenterMenu);
                      myControlTemplate.VisualTree = border;
                      btnMenu.Template = myControlTemplate;
+                     this.Menu.Children.Add(btnMenu); 
 
                      //находим все кнопки этого меню
-                     var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
-
-                     List<SService> sServices = new List<SService>();
-
-                     // Создание нового окна
-                     Window newWindow = new Window
-                     {
-                         Title = eqContext.SOfficeTerminalButtons.First(t => t.ParentId == SOfficeTerminalButton.First().ParentId && t.ButtonType == 1).ButtonName,
-                         WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                         Background = new SolidColorBrush(Color.FromRgb(173, 213, 222)),
-                         AllowDrop = false,
-                         AllowsTransparency = false,
-                     };
-
+                     /*var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
+                     StackPanel stackPanelHeaderMenu = new StackPanel();
+                     stackPanelHeaderMenu.Margin = new Thickness(64, 18, 0, 0); 
+                     List<SService> sServices = new List<SService>(); 
                      StackPanel stackPanel = new StackPanel();
                      stackPanel.Margin = new Thickness(32, 100, 0, 0);
                      stackPanel.Orientation = Orientation.Horizontal;
-
-                     // Отображение нового окна внутри основного окна
-                     newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                     //Заголовок меню
-                     StackPanel stackPanelHeaderMenu = new StackPanel();
-                     stackPanelHeaderMenu.Margin = new Thickness(64, 18, 0, 0);
-
                      TextBlock textBlockMenu = new TextBlock();
                      textBlockMenu.FontFamily = new FontFamily("Area");
                      textBlockMenu.FontSize = 60;
                      textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
-                     textBlockMenu.Text = eqContext.SOfficeTerminalButtons.First(t => t.ParentId == SOfficeTerminalButton.First().ParentId && t.ButtonType == 1).ButtonName;
-                     stackPanelHeaderMenu.Children.Add(textBlockMenu);
-
+                     textBlockMenu.Text = eqContext.SOfficeTerminalButtons.First(t => t.ParentId == SOfficeTerminalButton.First().ParentId && t.ButtonType == 1).ButtonName; 
+                     */
                      //создаем кнопки меню
-                     SOfficeTerminalButton.ToList().ForEach(button =>
-                     {
-                         int Btn_idx = 1;
-                         SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
-                         Button btn = new Button();
-                         btn.Name = "button" + Btn_idx;
-                         btn.Content = button.ButtonName;
-                         btn.HorizontalAlignment = HorizontalAlignment.Left;
-                         btn.VerticalAlignment = VerticalAlignment.Top;
-                         btn.Height = 75;
-                         btn.Width = 200;
-                         btn.Margin = new Thickness(32, 18, 0, 0);
-                         btn.Background = new SolidColorBrush(Color.FromRgb(1, 200, 1));
-                         btn.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
-                         btn.FontFamily = new FontFamily("Area");
-                         btn.FontSize = 20;
-                         btn.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                         DropShadowEffect btnshadowEffect = new DropShadowEffect();
-                         btnshadowEffect.Color = Colors.AliceBlue;
-                         btnshadowEffect.Direction = 50;
-                         btnshadowEffect.ShadowDepth = 2;
-                         btn.Effect = btnshadowEffect;
+                     /*  SOfficeTerminalButton.ToList().ForEach(button =>
+                       {
+                           int Btn_idx = 1;
+                           SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
+                           Button btn = new Button();
+                           btn.Name = "button" + Btn_idx;
+                           btn.Content = button.ButtonName;
+                           btn.HorizontalAlignment = HorizontalAlignment.Left;
+                           btn.VerticalAlignment = VerticalAlignment.Top;
+                           btn.Height = 75;
+                           btn.Width = 200;
+                           btn.Margin = new Thickness(32, 18, 0, 0);
+                           btn.Background = new SolidColorBrush(Color.FromRgb(1, 200, 1));
+                           btn.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
+                           btn.FontFamily = new FontFamily("Area");
+                           btn.FontSize = 20;
+                           btn.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                           DropShadowEffect btnshadowEffect = new DropShadowEffect();
+                           btnshadowEffect.Color = Colors.AliceBlue;
+                           btnshadowEffect.Direction = 50;
+                           btnshadowEffect.ShadowDepth = 2;
+                           btn.Effect = btnshadowEffect;
 
-                         ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                         FrameworkElementFactory btnBorder = new FrameworkElementFactory(typeof(Border));
-                         btnBorder.Name = "border";
-                         btnBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                         btnBorder.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                         btnBorder.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                         btnBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                         FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
-                         contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                         contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                         btnBorder.AppendChild(contentPresenter);
-                         myControlTemplate.VisualTree = btnBorder;
-                         btn.Template = myControlTemplate;
-                         btn.Click += (s, e) =>
-                         {
-                          
-                             Click_Button(s, e, sServices);
-                             this.Show(); 
-                         };
-                         stackPanel.Children.Add(btn);
+                           ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
+                           FrameworkElementFactory btnBorder = new FrameworkElementFactory(typeof(Border));
+                           btnBorder.Name = "border";
+                           btnBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                           btnBorder.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                           btnBorder.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                           btnBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                           FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+                           contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                           contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                           btnBorder.AppendChild(contentPresenter);
+                           myControlTemplate.VisualTree = btnBorder;
+                           btn.Template = myControlTemplate;
+                           btn.Click += (s, e) =>
+                           {
 
-                     });
-                     newWindow.WindowStyle = WindowStyle.None;
-                     newWindow.WindowState = WindowState.Maximized;
+                               Click_Button(s, e, sServices);
+                               this.Show(); 
+                           };
+                           stackPanel.Children.Add(btn); 
+                       }); */
 
                      //кнопка назад
-                     StackPanel stackPanelClose = new StackPanel();
+                 /*    StackPanel stackPanelClose = new StackPanel();
                      stackPanelClose.Orientation = Orientation.Horizontal;
                      stackPanelClose.VerticalAlignment = VerticalAlignment.Bottom;
                      Button btnClose = new Button();
@@ -240,32 +214,19 @@ namespace QE
                      btnCloseContentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
                      btnCloseBorder.AppendChild(btnCloseContentPresenter);
                      btnmyControlCloseTemplate.VisualTree = btnCloseBorder;
-
+                 */
                      //обрабочик кнопки назад
-                     btnClose.Click += (s, e) =>
-                    {
-                       newWindow.Hide();
-                       this.Show();
-                    };
-
-                     System.Windows.Controls.Grid grid = new System.Windows.Controls.Grid();
-                     stackPanelClose.Children.Add(btnClose); 
-                     //вставляем все на свои места
-                     grid.Children.Add(stackPanelHeaderMenu); //заголовок / название менню
-                     grid.Children.Add(stackPanel);           //содержание / кнопки
-                     grid.Children.Add(stackPanelClose);      // подвал / кнопка назад
-                     newWindow.Content = grid;
-
+                    /* btnClose.Click += (s, e) =>
+                    { 
+                       //this.Show();
+                    };*/
+                       
                      //обрабочик кнопки меню
-                     btnMenu.Click += (s, e) =>
+                   /*  btnMenu.Click += (s, e) =>
                      {
-                        //показываем результат
-                        newWindow.Show();
-                        this.Hide();
+                          
+                     };*/
 
-                     };
-
-                     menu.Children.Add(btnMenu);
                  }
 
                  else
@@ -312,6 +273,7 @@ namespace QE
                      buttons.Children.Add(btn);
                  }
              });
+             
         }
           
         private async void Click_Button(object sender, RoutedEventArgs e, SService sService)
@@ -327,7 +289,7 @@ namespace QE
                 }
             }
             FastReport.Report report = new FastReport.Report();
-            var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\Operator.frx";
+            var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
             report.Load(path);
             if (eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).Any())
             { 

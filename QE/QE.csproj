@@ -8,7 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="bin\img\footer_img.png" />
+    <Compile Remove="bin\FastReport\**" />
+    <Compile Remove="bin\img\**" />
+    <EmbeddedResource Remove="bin\FastReport\**" />
+    <EmbeddedResource Remove="bin\img\**" />
+    <None Remove="bin\FastReport\**" />
+    <None Remove="bin\img\**" />
+    <Page Remove="bin\FastReport\**" />
+    <Page Remove="bin\img\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="bin\FastReport\Operator.frx" />
-    <None Include="bin\img\icon-eq.png" />
+    <Folder Include="bin\" />
+    <Folder Include="FastReport\" />
+    <Folder Include="img\" />
   </ItemGroup>
 
 </Project>
