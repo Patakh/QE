@@ -7,6 +7,62 @@
           Name="MaimWindow"
           xmlns:local="clr-namespace:QE" 
           WindowState="Maximized" d:DesignWidth="721.88">
+    <Window.Resources>
+        <StackPanel Orientation="Vertical" x:Key="Keyboard" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="1" Width="40" Height="40"  />
+                <Button Content="2" Width="40" Height="40" />
+                <Button Content="3" Width="40" Height="40" />
+                <Button Content="4" Width="40" Height="40" />
+                <Button Content="5" Width="40" Height="40" />
+                <Button Content="6" Width="40" Height="40" />
+                <Button Content="7" Width="40" Height="40" />
+                <Button Content="8" Width="40" Height="40" />
+                <Button Content="9" Width="40" Height="40" />
+                <Button Content="0" Width="40" Height="40" />
+                <Button Content="-" Width="40" Height="40" />
+                <Button Content="Удалить" Width="75" Height="40" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Q" Width="40" Height="40" />
+                <Button Content="W" Width="40" Height="40" />
+                <Button Content="E" Width="40" Height="40" />
+                <Button Content="R" Width="40" Height="40" />
+                <Button Content="T" Width="40" Height="40" />
+                <Button Content="Y" Width="40" Height="40" />
+                <Button Content="U" Width="40" Height="40" />
+                <Button Content="I" Width="40" Height="40" />
+                <Button Content="O" Width="40" Height="40" />
+                <Button Content="P" Width="40" Height="40" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="A" Width="40" Height="40" />
+                <Button Content="S" Width="40" Height="40" />
+                <Button Content="D" Width="40" Height="40" />
+                <Button Content="F" Width="40" Height="40" />
+                <Button Content="G" Width="40" Height="40" />
+                <Button Content="H" Width="40" Height="40" />
+                <Button Content="J" Width="40" Height="40" />
+                <Button Content="K" Width="40" Height="40" />
+                <Button Content="L" Width="40" Height="40" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Shift" Width="75" Height="40" />
+                <Button Content="Z" Width="40" Height="40" />
+                <Button Content="X" Width="40" Height="40" />
+                <Button Content="C" Width="40" Height="40" />
+                <Button Content="V" Width="40" Height="40" />
+                <Button Content="B" Width="40" Height="40" />
+                <Button Content="N" Width="40" Height="40" />
+                <Button Content="M" Width="40" Height="40" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Пробел" Width="250" Height="40" /> 
+                <Button Content="Очистить" Width="75" Height="40" />
+                <Button Content="Ввод" Width="75" Height="40" /> 
+            </StackPanel>
+        </StackPanel>
+    </Window.Resources>
     <Grid x:Name="GridMain" Margin="40,40,40,40">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,7 +82,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Vertical" Grid.Column="0">
-                <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="250">
+                <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="250" x:Name="Button_Click_Estimate">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                         Оценить качество обслуживания
                     </TextBlock>
@@ -66,10 +122,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="StackClose" Visibility="Collapsed">
-                <Button Background="#eef" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" Width="200" x:Name="CloseButton">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
-                       Назад
-                    </TextBlock>
+                <Button Width="180" Height="140" x:Name="CloseButton" BorderBrush="Transparent"> 
                 </Button>
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" Orientation="Vertical" Grid.Column="1" Width="449" Height="139"  Name="ImageFooter"/>

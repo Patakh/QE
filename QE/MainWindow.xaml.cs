@@ -26,7 +26,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.ComponentModel;
 using FastReport.AdvMatrix;
 using System.Windows.Media.Effects;
@@ -35,6 +34,10 @@ using FastReport.DataVisualization.Charting;
 using System.Threading;
 using System.Windows.Controls.Primitives;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Controls.Button;
+using Window = System.Windows.Window;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace QE
 {
@@ -47,13 +50,13 @@ namespace QE
         {
             InitializeComponent();
             //настройки главного окна
-            this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin","") + "/img/icon-eq.png", System.UriKind.Absolute));
+            this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/icon-eq.png", System.UriKind.Absolute));
             Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             AllowDrop = false;
             AllowsTransparency = false;
             WindowStyle = WindowStyle.None;
-            PreviewKeyDown += HandleKeyPress; 
+            PreviewKeyDown += HandleKeyPress;
             ImageFooter.Background = new ImageBrush
             {
                 ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/footer_img.png", System.UriKind.Absolute))
@@ -80,15 +83,15 @@ namespace QE
             HeaderTextBlock.FontSize = 60;
             HeaderTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
             HeaderTextBlock.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
-             
+
 
             eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).ToList().ForEach(b =>
-             { 
+             {
                  if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                  {
-                      
+
                      //создаем кнопку перехода на меню
-                    Button btnMenu = new Button();
+                     Button btnMenu = new Button();
                      DropShadowEffect shadowEffect = new DropShadowEffect();
                      shadowEffect.Color = Colors.White;
                      shadowEffect.ShadowDepth = 3;
@@ -105,7 +108,7 @@ namespace QE
                      btnMenu.FontFamily = new FontFamily("Area");
                      btnMenu.FontSize = 25;
                      btnMenu.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                     btnMenu.TabIndex = 999; 
+                     btnMenu.TabIndex = 999;
                      ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
                      FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
                      border.Name = "border";
@@ -122,7 +125,7 @@ namespace QE
 
                      //находим все кнопки этого меню
                      var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
-                     StackPanel stackPanelHeadMenu = new StackPanel(); 
+                     StackPanel stackPanelHeadMenu = new StackPanel();
                      stackPanelHeadMenu.Orientation = Orientation.Vertical;
                      stackPanelHeadMenu.VerticalAlignment = VerticalAlignment.Top;
 
@@ -134,7 +137,7 @@ namespace QE
                      stackPanelHeadMenu.Children.Add(textBlockMenu);
 
                      List<SService> sServices = new List<SService>();
-                     StackPanel stackPanel = new StackPanel(); 
+                     StackPanel stackPanel = new StackPanel();
                      stackPanel.Orientation = Orientation.Vertical;
                      stackPanel.Visibility = Visibility.Collapsed;
                      stackPanel.Children.Add(stackPanelHeadMenu);
@@ -182,28 +185,20 @@ namespace QE
                              this.Show();
                          };
                          stackPanel.Children.Add(btn);
-                     }); 
+                     });
 
                      BodyWindow.Children.Add(stackPanel);
 
-                     btnMenu.Click += (s,e)=> {
+                     btnMenu.Click += (s, e) =>
+                     {
                          StackClose.Visibility = Visibility.Visible;
                          stackPanel.Visibility = Visibility.Visible;
-                         Menu.Visibility= Visibility.Collapsed;
-                         Buttons.Visibility = Visibility.Collapsed; 
+                         Menu.Visibility = Visibility.Collapsed;
+                         Buttons.Visibility = Visibility.Collapsed;
                      };
 
-                     this.CloseButton.Click += (s, e) =>
-                     {
-                         stackPanel.Visibility = Visibility.Collapsed;
-                         Menu.Visibility = Visibility.Visible;
-                         Buttons.Visibility = Visibility.Visible;
-                         StackClose.Visibility= Visibility.Collapsed; 
-                     };
-                      
+                     this.Menu.Children.Add(btnMenu);
 
-                     this.Menu.Children.Add(btnMenu); 
-                      
                  }
 
                  else
@@ -230,8 +225,8 @@ namespace QE
                      btn.Effect = shadowEffect;
 
                      btn.Click += (s, e) =>
-                     { 
-                         Click_Button(s, e, sServices); 
+                     {
+                         Click_Button(s, e, sServices);
                      };
 
                      ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
@@ -251,17 +246,147 @@ namespace QE
                  }
              });
 
+            //блок "Оценить качество обслуживания"
+            TextBlock textBlockEstimate = new TextBlock();
+            textBlockEstimate.FontFamily = new FontFamily("Area");
+            textBlockEstimate.FontSize = 60;
+            textBlockEstimate.HorizontalAlignment = HorizontalAlignment.Center;
+            textBlockEstimate.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+            textBlockEstimate.Text = "Введите номер дела";
 
-             
+            TextBox textBox = new TextBox();
+            textBox.FontSize = 35;
+            textBox.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
+            textBox.Margin = new Thickness(0, 50, 0, 20);
+            textBox.TextWrapping = TextWrapping.Wrap;
+
+            StackPanel stackPanelHeadEstimate = new StackPanel();
+            stackPanelHeadEstimate.Orientation = Orientation.Vertical;
+            stackPanelHeadEstimate.VerticalAlignment = VerticalAlignment.Top;
+            stackPanelHeadEstimate.Children.Add(textBlockEstimate);
+            stackPanelHeadEstimate.Children.Add(textBox);
+
+            StackPanel stackPanelEstimate = new StackPanel();
+            stackPanelEstimate.Orientation = Orientation.Vertical;
+            stackPanelEstimate.VerticalAlignment = VerticalAlignment.Top;
+            stackPanelEstimate.Visibility = Visibility.Collapsed;
+            stackPanelEstimate.HorizontalAlignment = HorizontalAlignment.Center;
+            stackPanelEstimate.Name = "Estimate";
+            stackPanelEstimate.Children.Add(stackPanelHeadEstimate);
+
+            //клавиатура
+            StackPanel stackPanelKeyboard = new StackPanel();
+            stackPanelKeyboard.Children.Add((StackPanel)MaimWindow.Resources["Keyboard"]);
+            bool upperCase = true;
+            foreach (StackPanel item in stackPanelKeyboard.Children)
+            {
+                foreach (StackPanel stackPanel in item.Children)
+                {
+                    foreach (Button button in stackPanel.Children)
+                    {
+                        button.Background = new SolidColorBrush(Colors.Blue);
+                        button.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                        switch (button.Content.ToString())
+                        {
+                            case "Удалить":
+                                button.Click += (s, e) =>
+                                {
+                                    textBox.Text = textBox.Text.Length == 0 ? "" : textBox.Text.Substring(0, textBox.Text.Length - 1);
+                                };
+                                break;
+                            case "Пробел":
+                                button.Click += (s, e) =>
+                                {
+                                    textBox.Text += " ";
+                                };
+                                break;
+                            case "Очистить":
+                                button.Click += (s, e) =>
+                                {
+                                    textBox.Text = "";
+                                };
+                                break;
+                            case "Ввод":
+                                button.Click += (s, e) =>
+                                {
+                                    textBox.Text = "";
+                                }; break;
+                            case "Shift":
+                                button.Click += (s, e) =>
+                                {
+                                    upperCase = !upperCase;
+                                    if (!upperCase)
+                                    {
+                                        button.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                                        button.Foreground = new SolidColorBrush(Colors.Blue);
+                                    }
+                                    else
+                                    {
+                                        button.Background = new SolidColorBrush(Colors.Blue);
+                                        button.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                                    }
+                                };
+                                break;
+                            default:
+                                button.Click += (s, e) =>
+                                {
+                                    textBox.Text += upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
+                                };
+                                break;
+                        }
+                    }
+                }
+            }
+
+            stackPanelEstimate.Children.Add(stackPanelKeyboard);
+
+            BodyWindow.Children.Add(stackPanelEstimate);
+
+            this.Button_Click_Estimate.Click += (s, e) =>
+            {
+                Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
+                foreach (StackPanel obj in BodyWindow.Children)
+                {
+                    obj.Visibility = Visibility.Collapsed;
+                    if (obj.Name == "Estimate")
+                    {
+                        obj.Visibility = Visibility.Visible;
+                    }
+                }
+                StackClose.Visibility = Visibility.Visible;
+            };
+
+
+
+            //Кнопка Домой
+            CloseButton.Background = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/home_red_icon.jpg", System.UriKind.Absolute))
+            };
+            this.CloseButton.Click += (s, e) =>
+            {
+                foreach (StackPanel obj in BodyWindow.Children)
+                {
+                    if (obj.Name == "Menu" || obj.Name == "Buttons")
+                    {
+                        obj.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        obj.Visibility = Visibility.Collapsed;
+                    }
+                }
+                StackClose.Visibility = Visibility.Collapsed;
+                Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)); ;
+            };
+
+
         }
 
-        private void BtnMenu_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
 
         private async void Click_Button(object sender, RoutedEventArgs e, SService sService)
-        { 
+        {
             EqContext eqContext = new EqContext();
             IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
             string IpOffise = "";
@@ -276,8 +401,8 @@ namespace QE
             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
             report.Load(path);
             if (eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).Any())
-            { 
-                DTicket dTicket_Last = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).OrderBy(o=>o.DateRegistration).Last();
+            {
+                DTicket dTicket_Last = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).OrderBy(o => o.DateRegistration).Last();
                 DTicket dTicket_New = new DTicket();
                 dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
                 dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
@@ -295,7 +420,7 @@ namespace QE
                 dTicket_New.TimeRegistration = TimeOnly.FromDateTime(DateTime.Now);
 
                 eqContext.DTickets.Add(dTicket_New);
-                eqContext.SaveChanges(); 
+                eqContext.SaveChanges();
                 report.SetParameterValue("Operation", sService.ServiceName);
                 report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
                 report.SetParameterValue("Time", dTicket_New.TimeRegistration);
@@ -304,10 +429,10 @@ namespace QE
                 report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
                 report.Prepare();
                 report.PrintSettings.ShowDialog = false;
-                report.Print(); 
+                report.Print();
             }
             else
-            { 
+            {
                 DTicket dTicket = new DTicket();
                 dTicket.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
                 dTicket.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
@@ -335,9 +460,9 @@ namespace QE
                 report.Prepare();
 
                 report.PrintSettings.ShowDialog = false;
-                report.PrintSettings.PrintOnSheetRawPaperSize = 89; 
-                  report.Print();
-            } 
+                report.PrintSettings.PrintOnSheetRawPaperSize = 89;
+                report.Print();
+            }
         }
 
         //закритие приложения
@@ -348,6 +473,7 @@ namespace QE
                 // Закрываем приложение
                 Application.Current.Shutdown();
             }
-        } 
+        }
+
     }
 }

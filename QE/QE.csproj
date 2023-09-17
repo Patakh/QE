@@ -36,7 +36,6 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="FastReport\" />
-    <Folder Include="img\" />
   </ItemGroup>
 
 </Project>
