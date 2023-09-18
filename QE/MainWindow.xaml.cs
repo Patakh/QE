@@ -38,6 +38,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Button = System.Windows.Controls.Button;
 using Window = System.Windows.Window;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Windows.Threading;
 
 namespace QE
 {
@@ -46,10 +47,13 @@ namespace QE
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer timer;
         public MainWindow()
         {
+
             InitializeComponent();
-            //настройки главного окна
+
+            #region Прочие настройки
             this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/icon-eq.png", System.UriKind.Absolute));
             Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -77,14 +81,22 @@ namespace QE
 
             Title = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).TerminalName;
             int Btn_idx = 1;
+             
+            // Создаем таймер для обновления даты и времени каждую секунду
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
 
-            // Офис
+            // Установка начальных значений даты и времени
+            UpdateDateTime();
+
             HeaderTextBlock.FontFamily = new FontFamily("Area");
-            HeaderTextBlock.FontSize = 60;
+            HeaderTextBlock.FontSize = 40;
             HeaderTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
-            HeaderTextBlock.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+            #endregion
 
-
+            #region Кнопки на главной 
             eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).ToList().ForEach(b =>
              {
                  if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
@@ -245,8 +257,10 @@ namespace QE
                      Buttons.Children.Add(btn);
                  }
              });
+            #endregion
 
-            //блок "Оценить качество обслуживания"
+            #region блок "Оценить качество обслуживания" 
+
             TextBlock textBlockEstimate = new TextBlock();
             textBlockEstimate.FontFamily = new FontFamily("Area");
             textBlockEstimate.FontSize = 60;
@@ -259,6 +273,7 @@ namespace QE
             textBox.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
             textBox.Margin = new Thickness(0, 50, 0, 20);
             textBox.TextWrapping = TextWrapping.Wrap;
+            textBox.Focus();
 
             StackPanel stackPanelHeadEstimate = new StackPanel();
             stackPanelHeadEstimate.Orientation = Orientation.Vertical;
@@ -276,7 +291,8 @@ namespace QE
 
             //клавиатура
             StackPanel stackPanelKeyboard = new StackPanel();
-            stackPanelKeyboard.Children.Add((StackPanel)MaimWindow.Resources["Keyboard"]);
+            stackPanelKeyboard.Children.Add((StackPanel)this.FindResource("Keyboard"));
+             
             bool upperCase = true;
             foreach (StackPanel item in stackPanelKeyboard.Children)
             {
@@ -286,35 +302,50 @@ namespace QE
                     {
                         button.Background = new SolidColorBrush(Colors.Blue);
                         button.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-
-                        switch (button.Content.ToString())
+                        button.Click += (s, e) =>
                         {
-                            case "Удалить":
-                                button.Click += (s, e) =>
-                                {
+                            Button buttonClick = (Button)s;
+                            switch (buttonClick.Content.ToString())
+                            {
+                                case "EN":
+                                    button.Content = "RU";
+                                    //Keyboard_RU
+                                    item.Children[1].Visibility = Visibility.Visible;
+                                    item.Children[2].Visibility = Visibility.Visible;
+                                    item.Children[3].Visibility = Visibility.Visible;
+
+                                    //Keyboard_EN
+                                    item.Children[4].Visibility = Visibility.Collapsed;
+                                    item.Children[5].Visibility = Visibility.Collapsed;
+                                    item.Children[6].Visibility = Visibility.Collapsed;
+                                    break;
+
+                                case "RU":
+                                    button.Content = "EN";
+                                    //Keyboard_RU
+                                    item.Children[1].Visibility = Visibility.Collapsed;
+                                    item.Children[2].Visibility = Visibility.Collapsed;
+                                    item.Children[3].Visibility = Visibility.Collapsed;
+
+                                    //Keyboard_EN
+                                    item.Children[4].Visibility = Visibility.Visible;
+                                    item.Children[5].Visibility = Visibility.Visible;
+                                    item.Children[6].Visibility = Visibility.Visible;
+                                    break;
+
+                                case "Удалить":
                                     textBox.Text = textBox.Text.Length == 0 ? "" : textBox.Text.Substring(0, textBox.Text.Length - 1);
-                                };
-                                break;
-                            case "Пробел":
-                                button.Click += (s, e) =>
-                                {
+                                    break;
+                                case "Пробел":
                                     textBox.Text += " ";
-                                };
-                                break;
-                            case "Очистить":
-                                button.Click += (s, e) =>
-                                {
+                                    break;
+                                case "Очистить":
                                     textBox.Text = "";
-                                };
-                                break;
-                            case "Ввод":
-                                button.Click += (s, e) =>
-                                {
+                                    break;
+                                case "Ввод":
                                     textBox.Text = "";
-                                }; break;
-                            case "Shift":
-                                button.Click += (s, e) =>
-                                {
+                                    break;
+                                case "Регистр":
                                     upperCase = !upperCase;
                                     if (!upperCase)
                                     {
@@ -326,23 +357,19 @@ namespace QE
                                         button.Background = new SolidColorBrush(Colors.Blue);
                                         button.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                                     }
-                                };
-                                break;
-                            default:
-                                button.Click += (s, e) =>
-                                {
+                                    break;
+                                default:
                                     textBox.Text += upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
-                                };
-                                break;
-                        }
+                                    break;
+                            }
+                            textBox.CaretIndex = textBox.Text.Length;
+                            textBox.Focus();
+                        };
                     }
                 }
             }
-
             stackPanelEstimate.Children.Add(stackPanelKeyboard);
-
             BodyWindow.Children.Add(stackPanelEstimate);
-
             this.Button_Click_Estimate.Click += (s, e) =>
             {
                 Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
@@ -356,10 +383,10 @@ namespace QE
                 }
                 StackClose.Visibility = Visibility.Visible;
             };
+            #endregion
 
+            #region Кнопка Домой
 
-
-            //Кнопка Домой
             CloseButton.Background = new ImageBrush
             {
                 ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/home_red_icon.jpg", System.UriKind.Absolute))
@@ -377,14 +404,14 @@ namespace QE
                         obj.Visibility = Visibility.Collapsed;
                     }
                 }
-                StackClose.Visibility = Visibility.Collapsed;
+                StackClose.Visibility = Visibility.Hidden;
                 Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)); ;
             };
-
+            #endregion 
 
         }
 
-
+        #region Поставка на очередь
         private async void Click_Button(object sender, RoutedEventArgs e, SService sService)
         {
             EqContext eqContext = new EqContext();
@@ -464,8 +491,9 @@ namespace QE
                 report.Print();
             }
         }
+        #endregion
 
-        //закритие приложения
+        #region закритие приложения
         private void HandleKeyPress(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == System.Windows.Input.Key.Escape)
@@ -474,6 +502,19 @@ namespace QE
                 Application.Current.Shutdown();
             }
         }
+        #endregion
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Обновляем дату и время при каждом срабатывании таймера
+            UpdateDateTime();
+        }
+
+        private void UpdateDateTime()
+        {
+            // Обновляем значения даты и времени
+            DateTime now = DateTime.Now;
+            HeaderTextBlock.Text = now.ToString("dddd")+" " + now.ToString("D") +" "+ now.ToString("HH:mm:ss"); 
+        }
     }
 }
