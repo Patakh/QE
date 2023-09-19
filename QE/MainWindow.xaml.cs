@@ -81,7 +81,7 @@ namespace QE
 
             Title = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).TerminalName;
             int Btn_idx = 1;
-             
+
             // Создаем таймер для обновления даты и времени каждую секунду
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -92,8 +92,16 @@ namespace QE
             UpdateDateTime();
 
             HeaderTextBlock.FontFamily = new FontFamily("Area");
-            HeaderTextBlock.FontSize = 40;
+            HeaderTextBlock.FontSize = 30;
             HeaderTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
+
+            // Офис
+            HeaderTextBlockOfice.FontFamily = new FontFamily("Area");
+            HeaderTextBlockOfice.FontSize = 30;
+            HeaderTextBlockOfice.Foreground = new SolidColorBrush(Color.FromRgb(44, 54, 75));
+            HeaderTextBlockOfice.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+
+
             #endregion
 
             #region Кнопки на главной 
@@ -101,7 +109,6 @@ namespace QE
              {
                  if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                  {
-
                      //создаем кнопку перехода на меню
                      Button btnMenu = new Button();
                      DropShadowEffect shadowEffect = new DropShadowEffect();
@@ -206,7 +213,7 @@ namespace QE
                          StackClose.Visibility = Visibility.Visible;
                          stackPanel.Visibility = Visibility.Visible;
                          Menu.Visibility = Visibility.Collapsed;
-                         Buttons.Visibility = Visibility.Collapsed;
+                         Schedules.Visibility = Visibility.Collapsed;
                      };
 
                      this.Menu.Children.Add(btnMenu);
@@ -254,9 +261,28 @@ namespace QE
                      border.AppendChild(contentPresenter);
                      myControlTemplate.VisualTree = border;
                      btn.Template = myControlTemplate;
-                     Buttons.Children.Add(btn);
+                     Menu.Children.Add(btn);
                  }
              });
+            #endregion
+
+            #region Режим работы 
+            TextBlock textSchedulesHead = new TextBlock();
+            textSchedulesHead.FontFamily = new FontFamily("Area");
+            textSchedulesHead.FontSize = 60;
+            textSchedulesHead.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+            textSchedulesHead.Text = "Режим работы";
+           Schedules.Children.Add(textSchedulesHead);
+            
+            eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id).ToList().ForEach(r =>
+               {
+                   TextBlock textBlockMenu = new TextBlock();
+                   textBlockMenu.FontFamily = new FontFamily("Area");
+                   textBlockMenu.FontSize = 25;
+                   textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+                   textBlockMenu.Text = eqContext.SDayWeeks.First(l => l.Id == r.SDayWeekId).DayName + " " + r.StartTime + " - " + r.StopTime;
+                   Schedules.Children.Add(textBlockMenu);
+               });
             #endregion
 
             #region блок "Оценить качество обслуживания" 
@@ -292,7 +318,7 @@ namespace QE
             //клавиатура
             StackPanel stackPanelKeyboard = new StackPanel();
             stackPanelKeyboard.Children.Add((StackPanel)this.FindResource("Keyboard"));
-             
+
             bool upperCase = true;
             foreach (StackPanel item in stackPanelKeyboard.Children)
             {
@@ -395,7 +421,7 @@ namespace QE
             {
                 foreach (StackPanel obj in BodyWindow.Children)
                 {
-                    if (obj.Name == "Menu" || obj.Name == "Buttons")
+                    if (obj.Name == "Menu" || obj.Name == "Schedules")
                     {
                         obj.Visibility = Visibility.Visible;
                     }
@@ -407,7 +433,7 @@ namespace QE
                 StackClose.Visibility = Visibility.Hidden;
                 Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)); ;
             };
-            #endregion 
+            #endregion
 
         }
 
@@ -424,9 +450,11 @@ namespace QE
                     IpOffise = address.ToString();
                 }
             }
+
             FastReport.Report report = new FastReport.Report();
             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
             report.Load(path);
+
             if (eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).Any())
             {
                 DTicket dTicket_Last = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).OrderBy(o => o.DateRegistration).Last();
@@ -448,6 +476,7 @@ namespace QE
 
                 eqContext.DTickets.Add(dTicket_New);
                 eqContext.SaveChanges();
+
                 report.SetParameterValue("Operation", sService.ServiceName);
                 report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
                 report.SetParameterValue("Time", dTicket_New.TimeRegistration);
@@ -514,7 +543,7 @@ namespace QE
         {
             // Обновляем значения даты и времени
             DateTime now = DateTime.Now;
-            HeaderTextBlock.Text = now.ToString("dddd")+" " + now.ToString("D") +" "+ now.ToString("HH:mm:ss"); 
+            HeaderTextBlock.Text = now.ToString("D") + " " + now.ToString("HH:mm:ss") + " " + now.ToString("dddd");
         }
     }
 }
