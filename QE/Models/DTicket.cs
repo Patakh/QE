@@ -34,11 +34,6 @@ public partial class DTicket
     public string ServicePrefix { get; set; } = null!;
 
     /// <summary>
-    /// Приоритет услуги
-    /// </summary>
-    public long ServicePriority { get; set; }
-
-    /// <summary>
     /// Приоритет заявителя
     /// </summary>
     public long? SPriorityId { get; set; }

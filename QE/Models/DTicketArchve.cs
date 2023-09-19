@@ -34,11 +34,6 @@ public partial class DTicketArchve
     public string ServicePrefix { get; set; } = null!;
 
     /// <summary>
-    /// Приоритет услуги
-    /// </summary>
-    public long ServicePriority { get; set; }
-
-    /// <summary>
     /// Приоритет Заявителя
     /// </summary>
     public long? SPriorityId { get; set; }
@@ -97,6 +92,11 @@ public partial class DTicketArchve
     /// Время начала обслужевания
     /// </summary>
     public TimeOnly TimeStartService { get; set; }
+
+    /// <summary>
+    /// Воемя ожидания
+    /// </summary>
+    public TimeOnly TimeWaiting { get; set; }
 
     public virtual DTicketPrerecord? DTicketPrerecord { get; set; }
 

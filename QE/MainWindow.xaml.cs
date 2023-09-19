@@ -100,8 +100,6 @@ namespace QE
             HeaderTextBlockOfice.FontSize = 30;
             HeaderTextBlockOfice.Foreground = new SolidColorBrush(Color.FromRgb(44, 54, 75));
             HeaderTextBlockOfice.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
-
-
             #endregion
 
             #region Кнопки на главной 
@@ -438,87 +436,53 @@ namespace QE
         }
 
         #region Поставка на очередь
-        private async void Click_Button(object sender, RoutedEventArgs e, SService sService)
+        private async Task Click_Button(object sender, RoutedEventArgs e, SService sService)
         {
             EqContext eqContext = new EqContext();
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            string IpOffise = "";
-            foreach (IPAddress address in localIPs)
-            {
-                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    IpOffise = address.ToString();
-                }
-            }
-
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName()); 
+            string IpOffise = localIPs.Where(w=>w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w=>w.ToString()).First();
+             
             FastReport.Report report = new FastReport.Report();
             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
             report.Load(path);
+            var LastTicketNumber = await eqContext.DTickets.Where(s=> s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o=>o.TicketNumber).Select(s=>s.TicketNumber).FirstOrDefaultAsync();
 
-            if (eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).Any())
+            DTicket dTicket_New = new DTicket();
+            dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
+            dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+            dTicket_New.SServiceId = sService.Id;
+            dTicket_New.ServicePrefix = sService.ServicePrefix;
+            //dTicket.SPriorityId = 1; 
+            dTicket_New.TicketNumber = LastTicketNumber + 1;
+            dTicket_New.TicketNumberFull = sService.ServicePrefix + (LastTicketNumber + 1);
+            //dTicket.DTicketPrerecordId = 1;
+            dTicket_New.SStatusId = 1;
+            //dTicket.SEmployeeId = 1;
+            //dTicket.SOfficeWindowId = 1;
+            dTicket_New.DateRegistration = DateOnly.FromDateTime(DateTime.Now);
+            dTicket_New.TimeRegistration = TimeOnly.FromDateTime(DateTime.Now);
+
+            DTicketStatus dTicketStatus = new DTicketStatus
             {
-                DTicket dTicket_Last = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(d => d.TimeRegistration).OrderBy(o => o.DateRegistration).Last();
-                DTicket dTicket_New = new DTicket();
-                dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-                dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
-                dTicket_New.SServiceId = sService.Id;
-                dTicket_New.ServicePrefix = sService.ServicePrefix;
-                //dTicket.SPriorityId = 1;
-                dTicket_New.ServicePriority = 1;
-                dTicket_New.TicketNumber = dTicket_Last.TicketNumber + 1;
-                dTicket_New.TicketNumberFull = dTicket_Last.ServicePrefix + (dTicket_Last.TicketNumber + 1);
-                //dTicket.DTicketPrerecordId = 1;
-                dTicket_New.SStatusId = 1;
-                //dTicket.SEmployeeId = 1;
-                //dTicket.SOfficeWindowId = 1;
-                dTicket_New.DateRegistration = DateOnly.FromDateTime(DateTime.Now);
-                dTicket_New.TimeRegistration = TimeOnly.FromDateTime(DateTime.Now);
+                // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
+                SStatusId = 1
+            };
 
-                eqContext.DTickets.Add(dTicket_New);
-                eqContext.SaveChanges();
+             dTicket_New.DTicketStatuses.Add(dTicketStatus);
 
-                report.SetParameterValue("Operation", sService.ServiceName);
-                report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
-                report.SetParameterValue("Time", dTicket_New.TimeRegistration);
-                report.SetParameterValue("TotalQueue", eqContext.DTickets.Count());
-                report.SetParameterValue("BeforeCount", eqContext.DTickets.Where(s => s.ServicePrefix == sService.ServicePrefix).Count());
-                report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
-                report.Prepare();
-                report.PrintSettings.ShowDialog = false;
-                report.Print();
-            }
-            else
-            {
-                DTicket dTicket = new DTicket();
-                dTicket.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-                dTicket.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
-                dTicket.SServiceId = 1;
-                dTicket.ServicePrefix = "A";
-                //dTicket.SPriorityId = 1;
-                dTicket.ServicePriority = 1;
-                dTicket.TicketNumber = 1;
-                dTicket.TicketNumberFull = "A1";
-                //dTicket.DTicketPrerecordId = 1;
-                dTicket.SStatusId = 1;
-                //dTicket.SEmployeeId = 1;
-                //dTicket.SOfficeWindowId = 1;
-                dTicket.DateRegistration = DateOnly.FromDateTime(DateTime.Now);
-                dTicket.TimeRegistration = TimeOnly.FromDateTime(DateTime.Now);
-                eqContext.DTickets.Add(dTicket);
-                eqContext.SaveChanges();
+            await eqContext.DTickets.AddAsync(dTicket_New);
+            await eqContext.SaveChangesAsync();
 
-                report.SetParameterValue("Operation", sService.ServiceName);
-                report.SetParameterValue("Number", sService.ServicePrefix + 1);
-                report.SetParameterValue("Time", dTicket.TimeRegistration);
-                report.SetParameterValue("TotalQueue", "1");
-                report.SetParameterValue("BeforeCount", "1");
-                report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == eqContext.SOfficeTerminals.First(k => k.IpAddress == IpOffise).Id).OfficeName);
-                report.Prepare();
-
-                report.PrintSettings.ShowDialog = false;
-                report.PrintSettings.PrintOnSheetRawPaperSize = 89;
-                report.Print();
-            }
+            report.SetParameterValue("Operation", sService.ServiceName);
+            report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
+            report.SetParameterValue("Time", dTicket_New.TimeRegistration);
+            report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+            report.SetParameterValue("BeforeCount", LastTicketNumber);
+            report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+            report.Prepare();
+            report.PrintSettings.ShowDialog = false;
+            report.PrintSettings.PrintOnSheetRawPaperSize = 0;
+            report.Print(); 
         }
         #endregion
 

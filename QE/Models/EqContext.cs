@@ -71,7 +71,7 @@ public partial class EqContext : DbContext
 
     public virtual DbSet<SService> SServices { get; set; }
 
-    public virtual DbSet<SSoursePrerecord> SSoursePrerecords { get; set; }
+    public virtual DbSet<SSourcePrerecord> SSourcePrerecords { get; set; }
 
     public virtual DbSet<SStatus> SStatuses { get; set; }
 
@@ -175,6 +175,7 @@ public partial class EqContext : DbContext
                 .HasComment("Связь с пред записью")
                 .HasColumnName("d_ticket_prerecord_id");
             entity.Property(e => e.DateRegistration)
+                .HasDefaultValueSql("CURRENT_DATE")
                 .HasComment("Дата постановки в очередь")
                 .HasColumnName("date_registration");
             entity.Property(e => e.SEmployeeId)
@@ -202,9 +203,6 @@ public partial class EqContext : DbContext
                 .HasMaxLength(1)
                 .HasComment("Префикс")
                 .HasColumnName("service_prefix");
-            entity.Property(e => e.ServicePriority)
-                .HasComment("Приоритет услуги")
-                .HasColumnName("service_priority");
             entity.Property(e => e.TicketNumber)
                 .HasComment("Номер талона")
                 .HasColumnName("ticket_number");
@@ -213,6 +211,7 @@ public partial class EqContext : DbContext
                 .HasComment("Полный номер талона")
                 .HasColumnName("ticket_number_full");
             entity.Property(e => e.TimeRegistration)
+                .HasDefaultValueSql("CURRENT_TIME")
                 .HasComment("Время постановки в очередь ")
                 .HasColumnName("time_registration");
 
@@ -296,9 +295,6 @@ public partial class EqContext : DbContext
                 .HasMaxLength(1)
                 .HasComment("Префикс")
                 .HasColumnName("service_prefix");
-            entity.Property(e => e.ServicePriority)
-                .HasComment("Приоритет услуги")
-                .HasColumnName("service_priority");
             entity.Property(e => e.TicketNumber)
                 .HasMaxLength(20)
                 .HasComment("Номер талона")
@@ -319,6 +315,9 @@ public partial class EqContext : DbContext
             entity.Property(e => e.TimeStopService)
                 .HasComment("Время окончания обсужевания")
                 .HasColumnName("time_stop_service");
+            entity.Property(e => e.TimeWaiting)
+                .HasComment("Воемя ожидания")
+                .HasColumnName("time_waiting");
 
             entity.HasOne(d => d.DTicketPrerecord).WithMany(p => p.DTicketArchves)
                 .HasForeignKey(d => d.DTicketPrerecordId)
@@ -392,7 +391,7 @@ public partial class EqContext : DbContext
                 .HasComment("Дата предзаписи")
                 .HasColumnName("date_prerecord");
             entity.Property(e => e.IsConfirmation)
-                .HasComment("Потвреждение того что заявитель пришел встал в очередь")
+                .HasComment("Подтвреждение того что заявитель пришел и встал в очередь")
                 .HasColumnName("is_confirmation");
             entity.Property(e => e.SEmployeeId)
                 .HasComment("Сотрудник")
@@ -403,9 +402,9 @@ public partial class EqContext : DbContext
             entity.Property(e => e.SServiceId)
                 .HasComment("Услуга")
                 .HasColumnName("s_service_id");
-            entity.Property(e => e.SSoursePrerecordId)
+            entity.Property(e => e.SSourсePrerecordId)
                 .HasComment("Источник")
-                .HasColumnName("s_sourse_prerecord_id");
+                .HasColumnName("s_sourсe_prerecord_id");
             entity.Property(e => e.ServicePrefix)
                 .HasMaxLength(1)
                 .HasComment("Префикс")
@@ -434,8 +433,8 @@ public partial class EqContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("d_ticket_prerecord_fk_3");
 
-            entity.HasOne(d => d.SSoursePrerecord).WithMany(p => p.DTicketPrerecords)
-                .HasForeignKey(d => d.SSoursePrerecordId)
+            entity.HasOne(d => d.SSourсePrerecord).WithMany(p => p.DTicketPrerecords)
+                .HasForeignKey(d => d.SSourсePrerecordId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("d_ticket_prerecord_fk_1");
         });
@@ -456,6 +455,7 @@ public partial class EqContext : DbContext
                 .HasComment(" Талон")
                 .HasColumnName("d_ticket_id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("CURRENT_DATE")
                 .HasComment("Дата")
                 .HasColumnName("date_add");
             entity.Property(e => e.SEmployeeId)
@@ -471,6 +471,7 @@ public partial class EqContext : DbContext
                 .HasComment("Статус")
                 .HasColumnName("s_status_id");
             entity.Property(e => e.TimeAdd)
+                .HasDefaultValueSql("CURRENT_TIME")
                 .HasComment("Время")
                 .HasColumnName("time_add");
 
@@ -993,6 +994,7 @@ public partial class EqContext : DbContext
                 .HasComment("Тип. 1 - Меню 2 - Услуга")
                 .HasColumnName("button_type");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1230,11 +1232,11 @@ public partial class EqContext : DbContext
                 .HasColumnName("service_priority");
         });
 
-        modelBuilder.Entity<SSoursePrerecord>(entity =>
+        modelBuilder.Entity<SSourcePrerecord>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("s_sourse_prerecord_pk");
 
-            entity.ToTable("s_sourse_prerecord", tb => tb.HasComment("Справочник источников пред записи"));
+            entity.ToTable("s_source_prerecord", tb => tb.HasComment("Справочник источников пред записи"));
 
             entity.HasIndex(e => e.Id, "s_sourse_prerecord_id_idx");
 

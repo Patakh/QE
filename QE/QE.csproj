@@ -34,8 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="bin\" />
     <Folder Include="FastReport\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0-windows\Npgsql.EntityFrameworkCore.PostgreSQL.dll" />
   </ItemGroup>
 
 </Project>

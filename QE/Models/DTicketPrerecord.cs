@@ -26,7 +26,7 @@ public partial class DTicketPrerecord
     /// <summary>
     /// Источник
     /// </summary>
-    public long SSoursePrerecordId { get; set; }
+    public long SSourсePrerecordId { get; set; }
 
     /// <summary>
     /// Префикс
@@ -84,7 +84,7 @@ public partial class DTicketPrerecord
     public TimeOnly StopTimePrerecord { get; set; }
 
     /// <summary>
-    /// Потвреждение того что заявитель пришел встал в очередь
+    /// Подтвреждение того что заявитель пришел и встал в очередь
     /// </summary>
     public bool IsConfirmation { get; set; }
 
@@ -98,5 +98,5 @@ public partial class DTicketPrerecord
 
     public virtual SService SService { get; set; } = null!;
 
-    public virtual SSoursePrerecord SSoursePrerecord { get; set; } = null!;
+    public virtual SSourcePrerecord SSourсePrerecord { get; set; } = null!;
 }

@@ -140,11 +140,11 @@
         <Grid Grid.Row="2" Height="150" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="Auto" />
                 <!-- первая колонка с автоматической шириной -->
-                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="Auto" />
                 <!-- вторая колонка с динамической шириной -->
-                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="Auto" />
                 <!-- первая колонка с автоматической шириной -->
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
@@ -156,21 +156,21 @@
             <StackPanel Orientation="Vertical" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" x:Name="Button_Click_Estimate">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
-                        Оценить качество обслуживания
+                       Льготная категория граждан
                     </TextBlock>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
-                      Получить информацию о талоне
+                     Предварительная запись
                     </TextBlock>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
-                      Регистрация по предворительной записи
+                     Регистрация по предварительной записи
                     </TextBlock>
                 </Button>
             </StackPanel>

@@ -41,12 +41,12 @@ public partial class DTicketStatus
     /// <summary>
     /// Дата
     /// </summary>
-    public DateOnly? DateAdd { get; set; }
+    public DateOnly DateAdd { get; set; }
 
     /// <summary>
     /// Время
     /// </summary>
-    public TimeOnly? TimeAdd { get; set; }
+    public TimeOnly TimeAdd { get; set; }
 
     public virtual DTicket DTicket { get; set; } = null!;
 
