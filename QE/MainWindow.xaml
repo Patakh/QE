@@ -101,12 +101,34 @@
                 <Button Content="Б" Width="60" Height="60" />
                 <Button Content="Ю" Width="60" Height="60" />
             </StackPanel>
-
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Регистр" Width="75" Height="60" />
                 <Button Content="Пробел" Width="150" Height="60" />
                 <Button Content="Очистить" Width="75" Height="60" />
                 <Button Content="Ввод" Width="75" Height="60" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" x:Key="KeyboardNumber" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="1" Width="60" Height="60"  />
+                <Button Content="2" Width="60" Height="60" />
+                <Button Content="3" Width="60" Height="60" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> 
+                <Button Content="4" Width="60" Height="60" />
+                <Button Content="5" Width="60" Height="60" />
+                <Button Content="6" Width="60" Height="60" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> 
+                <Button Content="7" Width="60" Height="60" />
+                <Button Content="8" Width="60" Height="60" />
+                <Button Content="9" Width="60" Height="60" /> 
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="0" Width="60" Height="60" />
+                <Button Content="Удалить" Width="60" Height="60" />
+                <Button Content="Ввод" Width="60" Height="60" />
             </StackPanel>
         </StackPanel>
     </Window.Resources>
@@ -117,64 +139,67 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <!-- Верхний заголовок -->
-        <Grid Height="Auto">
+        <Grid Height="Auto" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="HeaderTextBlockOfice" HorizontalAlignment="Left" Margin="10" Grid.Column="0" Foreground="White" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-            <TextBlock x:Name="HeaderTextBlock" HorizontalAlignment="Right" Grid.Column="1" Foreground="White" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+            <StackPanel x:Name="HeaderTextBlock"  HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Center"></StackPanel>
         </Grid>
 
         <!-- Область содержимого -->
-        <StackPanel Grid.Row="1" Background="#fff" VerticalAlignment="Center" >
-            <Grid x:Name="BodyWindow">
-                <StackPanel x:Name="Menu" Orientation="Horizontal"  VerticalAlignment="Center">
-                </StackPanel>
-                <StackPanel x:Name="Schedules" Orientation="Vertical" HorizontalAlignment="Right" Width="{Binding ElementName=HeaderTextBlock, Path=ActualWidth}">
-                </StackPanel>
-            </Grid>
-        </StackPanel>
-
-        <!-- Нижний колонтитул -->
-        <Grid Grid.Row="2" Height="150" >
+        <Grid Grid.Row="1" Background="#fff">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <!-- первая колонка с автоматической шириной -->
-                <ColumnDefinition Width="Auto" />
-                <!-- вторая колонка с динамической шириной -->
-                <ColumnDefinition Width="Auto" />
-                <!-- первая колонка с автоматической шириной -->
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="StackClose" Visibility="Hidden">
-                <Button Width="180" Height="140" x:Name="CloseButton" BorderBrush="Transparent">
-                </Button>
+
+            <StackPanel x:Name="BodyWindow" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <WrapPanel x:Name="Menu_Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
+                </WrapPanel>
+                <WrapPanel x:Name="Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
+                </WrapPanel>
             </StackPanel>
 
-            <StackPanel Orientation="Vertical" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" x:Name="Button_Click_Estimate">
+            <WrapPanel Grid.Column="1" x:Name="Schedules" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Width="{Binding ElementName=HeaderTextBlock, Path=ActualWidth}">
+            </WrapPanel>
+        </Grid>
+
+        <!-- Нижний колонтитул -->
+        <Grid Grid.Row="2" Height="150"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <!-- первая колонка с автоматической шириной -->
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="StackClose" Visibility="Hidden">
+                <Button Width="100" Height="100" x:Name="CloseButton" BorderBrush="Transparent">
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" x:Name="Button_Click_PreferentialСategoryСitizens">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                        Льготная категория граждан
                     </TextBlock>
                 </Button>
             </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" x:Name="Button_Click_Pre_registration" Foreground="#700" BorderBrush="#eee">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
-                     Предварительная запись
+                       Предварительная запись
                     </TextBlock>
                 </Button>
             </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                 <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                      Регистрация по предварительной записи
                     </TextBlock>
                 </Button>
             </StackPanel>
-            <StackPanel HorizontalAlignment="Right" Orientation="Vertical" Grid.Column="4" Width="449" Height="139"  Name="ImageFooter"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window> 

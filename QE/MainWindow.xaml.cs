@@ -50,7 +50,6 @@ namespace QE
         private DispatcherTimer timer;
         public MainWindow()
         {
-
             InitializeComponent();
 
             #region Прочие настройки
@@ -61,11 +60,6 @@ namespace QE
             AllowsTransparency = false;
             WindowStyle = WindowStyle.None;
             PreviewKeyDown += HandleKeyPress;
-            ImageFooter.Background = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "/img/footer_img.png", System.UriKind.Absolute))
-            };
-
             //подключение к базе
             EqContext eqContext = new EqContext();
             IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
@@ -91,9 +85,6 @@ namespace QE
             // Установка начальных значений даты и времени
             UpdateDateTime();
 
-            HeaderTextBlock.FontFamily = new FontFamily("Area");
-            HeaderTextBlock.FontSize = 30;
-            HeaderTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(237, 216, 181));
 
             // Офис
             HeaderTextBlockOfice.FontFamily = new FontFamily("Area");
@@ -103,7 +94,7 @@ namespace QE
             #endregion
 
             #region Кнопки на главной 
-            eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).ToList().ForEach(b =>
+            eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
              {
                  if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                  {
@@ -115,7 +106,7 @@ namespace QE
                      btnMenu.Effect = shadowEffect;
                      btnMenu.Name = "button" + Btn_idx;
                      btnMenu.Content = b.ButtonName;
-                     btnMenu.HorizontalAlignment = HorizontalAlignment.Left;
+                     btnMenu.HorizontalAlignment = HorizontalAlignment.Center;
                      btnMenu.VerticalAlignment = VerticalAlignment.Top;
                      btnMenu.Height = 75;
                      btnMenu.Width = 200;
@@ -140,25 +131,30 @@ namespace QE
                      myControlTemplate.VisualTree = border;
                      btnMenu.Template = myControlTemplate;
 
-                     //находим все кнопки этого меню
+                     //все кнопки этого меню
                      var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
-                     StackPanel stackPanelHeadMenu = new StackPanel();
-                     stackPanelHeadMenu.Orientation = Orientation.Vertical;
-                     stackPanelHeadMenu.VerticalAlignment = VerticalAlignment.Top;
 
+                     //Заголовок меню
                      TextBlock textBlockMenu = new TextBlock();
                      textBlockMenu.FontFamily = new FontFamily("Area");
                      textBlockMenu.FontSize = 60;
                      textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
                      textBlockMenu.Text = eqContext.SOfficeTerminalButtons.First(t => t.ParentId == SOfficeTerminalButton.First().ParentId && t.ButtonType == 1).ButtonName;
-                     stackPanelHeadMenu.Children.Add(textBlockMenu);
 
-                     List<SService> sServices = new List<SService>();
-                     StackPanel stackPanel = new StackPanel();
-                     stackPanel.Orientation = Orientation.Vertical;
-                     stackPanel.Visibility = Visibility.Collapsed;
-                     stackPanel.Children.Add(stackPanelHeadMenu);
+                     WrapPanel warpPanelHeadMenu = new WrapPanel();
+                     warpPanelHeadMenu.Orientation = Orientation.Horizontal;
+                     warpPanelHeadMenu.VerticalAlignment = VerticalAlignment.Center;
+                     warpPanelHeadMenu.Visibility = Visibility.Collapsed;
+                     warpPanelHeadMenu.Margin = new Thickness(25,0,0,0);
+                     warpPanelHeadMenu.Children.Add(textBlockMenu);
+                     Buttnos.Children.Add(warpPanelHeadMenu);
+
                      //создаем кнопки меню
+                     List<SService> sServices = new List<SService>();
+                     WrapPanel wrapPanel = new WrapPanel();
+                     wrapPanel.Orientation = Orientation.Horizontal;
+                     wrapPanel.Visibility = Visibility.Collapsed;
+                     wrapPanel.MaxWidth = 800; 
                      SOfficeTerminalButton.ToList().ForEach(button =>
                      {
                          int Btn_idx = 1;
@@ -166,8 +162,8 @@ namespace QE
                          Button btn = new Button();
                          btn.Name = "button" + Btn_idx;
                          btn.Content = button.ButtonName;
-                         btn.HorizontalAlignment = HorizontalAlignment.Left;
-                         btn.VerticalAlignment = VerticalAlignment.Top;
+                         btn.HorizontalAlignment = HorizontalAlignment.Center;
+                         btn.VerticalAlignment = VerticalAlignment.Center;
                          btn.Height = 75;
                          btn.Width = 200;
                          btn.Margin = new Thickness(32, 18, 0, 0);
@@ -197,24 +193,22 @@ namespace QE
                          btn.Template = myControlTemplate;
                          btn.Click += (s, e) =>
                          {
-
                              Click_Button(s, e, sServices);
-                             this.Show();
                          };
-                         stackPanel.Children.Add(btn);
+                         wrapPanel.Children.Add(btn);
                      });
-
-                     BodyWindow.Children.Add(stackPanel);
+                     Buttnos.Children.Add(wrapPanel);
 
                      btnMenu.Click += (s, e) =>
                      {
                          StackClose.Visibility = Visibility.Visible;
-                         stackPanel.Visibility = Visibility.Visible;
-                         Menu.Visibility = Visibility.Collapsed;
-                         Schedules.Visibility = Visibility.Collapsed;
+                         wrapPanel.Visibility = Visibility.Visible;
+                         warpPanelHeadMenu.Visibility = Visibility.Visible;
+                         Buttnos.Visibility = Visibility.Visible;
+                         Menu_Buttnos.Visibility = Visibility.Collapsed;
                      };
 
-                     this.Menu.Children.Add(btnMenu);
+                     this.Menu_Buttnos.Children.Add(btnMenu);
 
                  }
 
@@ -225,7 +219,7 @@ namespace QE
                      Button btn = new Button();
                      btn.Name = "button" + Btn_idx;
                      btn.Content = b.ButtonName;
-                     btn.HorizontalAlignment = HorizontalAlignment.Left;
+                     btn.HorizontalAlignment = HorizontalAlignment.Center;
                      btn.VerticalAlignment = VerticalAlignment.Top;
                      btn.Height = 75;
                      btn.Width = 200;
@@ -259,7 +253,13 @@ namespace QE
                      border.AppendChild(contentPresenter);
                      myControlTemplate.VisualTree = border;
                      btn.Template = myControlTemplate;
-                     Menu.Children.Add(btn);
+
+                     StackPanel stackPanelBtn = new StackPanel();
+                     stackPanelBtn.Orientation = Orientation.Vertical;
+                     stackPanelBtn.HorizontalAlignment = HorizontalAlignment.Center;
+                     stackPanelBtn.Children.Add(btn);
+                     Menu_Buttnos.Children.Add(stackPanelBtn);
+
                  }
              });
             #endregion
@@ -267,51 +267,71 @@ namespace QE
             #region Режим работы 
             TextBlock textSchedulesHead = new TextBlock();
             textSchedulesHead.FontFamily = new FontFamily("Area");
-            textSchedulesHead.FontSize = 60;
+            textSchedulesHead.FontSize = 30;
+            textSchedulesHead.HorizontalAlignment = HorizontalAlignment.Center;
+            textSchedulesHead.Margin = new Thickness(0, 0, 0, 20);
             textSchedulesHead.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+            textSchedulesHead.FontWeight = FontWeights.Bold;
             textSchedulesHead.Text = "Режим работы";
-           Schedules.Children.Add(textSchedulesHead);
-            
+            Schedules.Children.Add(textSchedulesHead);
+
             eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id).ToList().ForEach(r =>
                {
-                   TextBlock textBlockMenu = new TextBlock();
-                   textBlockMenu.FontFamily = new FontFamily("Area");
-                   textBlockMenu.FontSize = 25;
-                   textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
-                   textBlockMenu.Text = eqContext.SDayWeeks.First(l => l.Id == r.SDayWeekId).DayName + " " + r.StartTime + " - " + r.StopTime;
-                   Schedules.Children.Add(textBlockMenu);
+                   TextBlock textBlockDayWeek = new TextBlock();
+                   textBlockDayWeek.FontFamily = new FontFamily("Area");
+                   textBlockDayWeek.FontSize = 25;
+                   textBlockDayWeek.HorizontalAlignment = HorizontalAlignment.Left;
+                   textBlockDayWeek.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+                   textBlockDayWeek.Text = eqContext.SDayWeeks.First(l => l.Id == r.SDayWeekId).DayName;
+                   textBlockDayWeek.Width = 250;
+
+                   TextBlock textBlockTime = new TextBlock();
+                   textBlockTime.FontFamily = new FontFamily("Area");
+                   textBlockTime.FontSize = 25;
+                   textBlockTime.HorizontalAlignment = HorizontalAlignment.Right;
+                   textBlockTime.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+                   textBlockTime.Text = r.StartTime + " - " + r.StopTime;
+
+
+                   StackPanel stackPanelSchedules = new StackPanel();
+                   stackPanelSchedules.Orientation = Orientation.Horizontal;
+                   stackPanelSchedules.HorizontalAlignment = HorizontalAlignment.Center;
+                   stackPanelSchedules.Children.Add(textBlockDayWeek);
+                   stackPanelSchedules.Children.Add(textBlockTime);
+
+                   Schedules.Children.Add(stackPanelSchedules);
                });
             #endregion
 
-            #region блок "Оценить качество обслуживания" 
+            #region Кнопка "Предварительная запись" 
 
-            TextBlock textBlockEstimate = new TextBlock();
-            textBlockEstimate.FontFamily = new FontFamily("Area");
-            textBlockEstimate.FontSize = 60;
-            textBlockEstimate.HorizontalAlignment = HorizontalAlignment.Center;
-            textBlockEstimate.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
-            textBlockEstimate.Text = "Введите номер дела";
+            TextBlock textBlockPre_registration = new TextBlock();
+            textBlockPre_registration.FontFamily = new FontFamily("Area");
+            textBlockPre_registration.FontSize = 60;
+            textBlockPre_registration.HorizontalAlignment = HorizontalAlignment.Center;
+            textBlockPre_registration.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+            textBlockPre_registration.Text = "Введите номер дела";
 
-            TextBox textBox = new TextBox();
-            textBox.FontSize = 35;
-            textBox.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
-            textBox.Margin = new Thickness(0, 50, 0, 20);
-            textBox.TextWrapping = TextWrapping.Wrap;
-            textBox.Focus();
+            TextBox textBoxPre_registration = new TextBox();
+            textBoxPre_registration.FontSize = 35;
+            textBoxPre_registration.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
+            textBoxPre_registration.Margin = new Thickness(0, 50, 0, 20);
+            textBoxPre_registration.TextWrapping = TextWrapping.Wrap;
+            textBoxPre_registration.Focus();
 
-            StackPanel stackPanelHeadEstimate = new StackPanel();
-            stackPanelHeadEstimate.Orientation = Orientation.Vertical;
-            stackPanelHeadEstimate.VerticalAlignment = VerticalAlignment.Top;
-            stackPanelHeadEstimate.Children.Add(textBlockEstimate);
-            stackPanelHeadEstimate.Children.Add(textBox);
+            StackPanel stackPanelHeadPre_registration = new StackPanel();
+            stackPanelHeadPre_registration.Orientation = Orientation.Vertical;
+            stackPanelHeadPre_registration.VerticalAlignment = VerticalAlignment.Top;
+            stackPanelHeadPre_registration.Children.Add(textBlockPre_registration);
+            stackPanelHeadPre_registration.Children.Add(textBoxPre_registration);
 
-            StackPanel stackPanelEstimate = new StackPanel();
-            stackPanelEstimate.Orientation = Orientation.Vertical;
-            stackPanelEstimate.VerticalAlignment = VerticalAlignment.Top;
-            stackPanelEstimate.Visibility = Visibility.Collapsed;
-            stackPanelEstimate.HorizontalAlignment = HorizontalAlignment.Center;
-            stackPanelEstimate.Name = "Estimate";
-            stackPanelEstimate.Children.Add(stackPanelHeadEstimate);
+            WrapPanel wrapPanelPre_registration = new WrapPanel();
+            wrapPanelPre_registration.Orientation = Orientation.Vertical;
+            wrapPanelPre_registration.VerticalAlignment = VerticalAlignment.Top;
+            wrapPanelPre_registration.Visibility = Visibility.Collapsed;
+            wrapPanelPre_registration.HorizontalAlignment = HorizontalAlignment.Center;
+            wrapPanelPre_registration.Name = "Pre_registration";
+            wrapPanelPre_registration.Children.Add(stackPanelHeadPre_registration);
 
             //клавиатура
             StackPanel stackPanelKeyboard = new StackPanel();
@@ -358,16 +378,16 @@ namespace QE
                                     break;
 
                                 case "Удалить":
-                                    textBox.Text = textBox.Text.Length == 0 ? "" : textBox.Text.Substring(0, textBox.Text.Length - 1);
+                                    textBoxPre_registration.Text = textBoxPre_registration.Text.Length == 0 ? "" : textBoxPre_registration.Text.Substring(0, textBoxPre_registration.Text.Length - 1);
                                     break;
                                 case "Пробел":
-                                    textBox.Text += " ";
+                                    textBoxPre_registration.Text += " ";
                                     break;
                                 case "Очистить":
-                                    textBox.Text = "";
+                                    textBoxPre_registration.Text = "";
                                     break;
                                 case "Ввод":
-                                    textBox.Text = "";
+                                    textBoxPre_registration.Text = "";
                                     break;
                                 case "Регистр":
                                     upperCase = !upperCase;
@@ -383,30 +403,114 @@ namespace QE
                                     }
                                     break;
                                 default:
-                                    textBox.Text += upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
+                                    textBoxPre_registration.Text += upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
                                     break;
                             }
-                            textBox.CaretIndex = textBox.Text.Length;
-                            textBox.Focus();
+                            textBoxPre_registration.CaretIndex = textBoxPre_registration.Text.Length;
+                            textBoxPre_registration.Focus();
                         };
                     }
                 }
             }
-            stackPanelEstimate.Children.Add(stackPanelKeyboard);
-            BodyWindow.Children.Add(stackPanelEstimate);
-            this.Button_Click_Estimate.Click += (s, e) =>
+            wrapPanelPre_registration.Children.Add(stackPanelKeyboard);
+            BodyWindow.Children.Add(wrapPanelPre_registration);
+            this.Button_Click_Pre_registration.Click += (s, e) =>
             {
-                Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
-                foreach (StackPanel obj in BodyWindow.Children)
+                Button_Click_Pre_registration.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
+                foreach (WrapPanel obj in BodyWindow.Children)
                 {
                     obj.Visibility = Visibility.Collapsed;
-                    if (obj.Name == "Estimate")
+                    if (obj.Name == "Pre_registration")
                     {
                         obj.Visibility = Visibility.Visible;
                     }
                 }
                 StackClose.Visibility = Visibility.Visible;
             };
+            #endregion
+
+            #region Кнопка "Льготная категория граждан" 
+            TextBlock textBlockPreferentialСategoryСitizens = new TextBlock();
+            textBlockPreferentialСategoryСitizens.FontFamily = new FontFamily("Area");
+            textBlockPreferentialСategoryСitizens.FontSize = 60;
+            textBlockPreferentialСategoryСitizens.HorizontalAlignment = HorizontalAlignment.Center;
+            textBlockPreferentialСategoryСitizens.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+            textBlockPreferentialСategoryСitizens.Text = "Введите номер дела";
+
+            TextBox textBoxPreferentialСategoryСitizens = new TextBox();
+            textBoxPreferentialСategoryСitizens.FontSize = 35;
+            textBoxPreferentialСategoryСitizens.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
+            textBoxPreferentialСategoryСitizens.Margin = new Thickness(0, 50, 0, 20);
+            textBoxPreferentialСategoryСitizens.TextWrapping = TextWrapping.Wrap;
+            textBoxPreferentialСategoryСitizens.Focus();
+
+            StackPanel stackPanelHeadPreferentialСategoryСitizens = new StackPanel();
+            stackPanelHeadPreferentialСategoryСitizens.Orientation = Orientation.Vertical;
+            stackPanelHeadPreferentialСategoryСitizens.VerticalAlignment = VerticalAlignment.Top;
+            stackPanelHeadPreferentialСategoryСitizens.Children.Add(textBlockPreferentialСategoryСitizens);
+            stackPanelHeadPreferentialСategoryСitizens.Children.Add(textBoxPreferentialСategoryСitizens);
+
+            WrapPanel wrapPanelPreferentialСategoryСitizens = new WrapPanel();
+            wrapPanelPreferentialСategoryСitizens.Orientation = Orientation.Vertical;
+            wrapPanelPreferentialСategoryСitizens.VerticalAlignment = VerticalAlignment.Top;
+            wrapPanelPreferentialСategoryСitizens.Visibility = Visibility.Collapsed;
+            wrapPanelPreferentialСategoryСitizens.HorizontalAlignment = HorizontalAlignment.Center;
+            wrapPanelPreferentialСategoryСitizens.Name = "PreferentialСategoryСitizens";
+            wrapPanelPreferentialСategoryСitizens.Children.Add(stackPanelHeadPreferentialСategoryСitizens);
+
+            //клавиатура
+            StackPanel stackPanelKeyboardPreferentialСategoryСitizens = new StackPanel();
+            stackPanelKeyboardPreferentialСategoryСitizens.Children.Add((StackPanel)this.FindResource("KeyboardNumber")); 
+            foreach (StackPanel item in stackPanelKeyboardPreferentialСategoryСitizens.Children)
+            {
+                foreach (StackPanel stackPanel in item.Children)
+                {
+                    foreach (Button button in stackPanel.Children)
+                    {
+                        button.Background = new SolidColorBrush(Colors.Blue);
+                        button.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                        button.Click += (s, e) =>
+                        {
+                            Button buttonClick = (Button)s;
+                            switch (buttonClick.Content.ToString())
+                            {
+                               
+
+                                case "Удалить":
+                                    textBoxPreferentialСategoryСitizens.Text = textBoxPreferentialСategoryСitizens.Text.Length == 0 ? "" : textBoxPreferentialСategoryСitizens.Text.Substring(0, textBoxPreferentialСategoryСitizens.Text.Length - 1);
+                                    break;
+                               
+                                case "Ввод":
+                                    textBoxPreferentialСategoryСitizens.Text = "";
+                                    break;
+                                default:
+                                    textBoxPreferentialСategoryСitizens.Text += upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
+                                    break;
+                            }
+                            textBoxPreferentialСategoryСitizens.CaretIndex = textBoxPreferentialСategoryСitizens.Text.Length;
+                            textBoxPreferentialСategoryСitizens.Focus();
+                        };
+                    }
+                }
+            }
+            
+            wrapPanelPreferentialСategoryСitizens.Children.Add(stackPanelKeyboardPreferentialСategoryСitizens);
+            BodyWindow.Children.Add(wrapPanelPreferentialСategoryСitizens);
+            
+            this.Button_Click_PreferentialСategoryСitizens.Click += (s, e) =>
+            {
+                Button_Click_PreferentialСategoryСitizens.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
+                foreach (WrapPanel obj in BodyWindow.Children)
+                {
+                    obj.Visibility = Visibility.Collapsed;
+                    if (obj.Name == "PreferentialСategoryСitizens")
+                    {
+                        obj.Visibility = Visibility.Visible;
+                    }
+                }
+                StackClose.Visibility = Visibility.Visible;
+            };
+            
             #endregion
 
             #region Кнопка Домой
@@ -417,9 +521,13 @@ namespace QE
             };
             this.CloseButton.Click += (s, e) =>
             {
-                foreach (StackPanel obj in BodyWindow.Children)
+                foreach (WrapPanel obj in Buttnos.Children)
                 {
-                    if (obj.Name == "Menu" || obj.Name == "Schedules")
+                    obj.Visibility = Visibility.Collapsed;
+                }
+                foreach (WrapPanel obj in BodyWindow.Children)
+                {
+                    if (obj.Name == "Menu_Buttnos" || obj.Name == "Schedules")
                     {
                         obj.Visibility = Visibility.Visible;
                     }
@@ -429,23 +537,22 @@ namespace QE
                     }
                 }
                 StackClose.Visibility = Visibility.Hidden;
-                Button_Click_Estimate.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)); ;
+                Button_Click_Pre_registration.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255)); ;
             };
             #endregion
-
         }
 
         #region Поставка на очередь
         private async Task Click_Button(object sender, RoutedEventArgs e, SService sService)
         {
             EqContext eqContext = new EqContext();
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName()); 
-            string IpOffise = localIPs.Where(w=>w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w=>w.ToString()).First();
-             
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
+
             FastReport.Report report = new FastReport.Report();
             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
             report.Load(path);
-            var LastTicketNumber = await eqContext.DTickets.Where(s=> s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o=>o.TicketNumber).Select(s=>s.TicketNumber).FirstOrDefaultAsync();
+            var LastTicketNumber = await eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefaultAsync();
 
             DTicket dTicket_New = new DTicket();
             dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
@@ -468,7 +575,7 @@ namespace QE
                 SStatusId = 1
             };
 
-             dTicket_New.DTicketStatuses.Add(dTicketStatus);
+            dTicket_New.DTicketStatuses.Add(dTicketStatus);
 
             await eqContext.DTickets.AddAsync(dTicket_New);
             await eqContext.SaveChangesAsync();
@@ -482,7 +589,7 @@ namespace QE
             report.Prepare();
             report.PrintSettings.ShowDialog = false;
             report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-            report.Print(); 
+            report.Print();
         }
         #endregion
 
@@ -507,7 +614,23 @@ namespace QE
         {
             // Обновляем значения даты и времени
             DateTime now = DateTime.Now;
-            HeaderTextBlock.Text = now.ToString("D") + " " + now.ToString("HH:mm:ss") + " " + now.ToString("dddd");
+            TextBlock textBlockD = new TextBlock();
+            textBlockD.FontFamily = new FontFamily("Area");
+            textBlockD.FontSize = 30;
+            textBlockD.Foreground = new SolidColorBrush(Color.FromRgb(137, 116, 81));
+            textBlockD.Text = now.ToString("D") + "         " + now.ToString("HH:mm:ss");
+
+            TextBlock textBlockdddd = new TextBlock();
+            textBlockdddd.FontFamily = new FontFamily("Area");
+            textBlockdddd.FontSize = 30;
+            textBlockdddd.HorizontalAlignment = HorizontalAlignment.Right;
+            textBlockdddd.Foreground = new SolidColorBrush(Color.FromRgb(137, 116, 81));
+            textBlockdddd.Text = now.ToString("dddd");
+            HeaderTextBlock.Children.Clear();
+
+            HeaderTextBlock.Children.Add(textBlockD);
+            HeaderTextBlock.Children.Add(textBlockdddd);
+
         }
     }
 }
