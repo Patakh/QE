@@ -14,7 +14,7 @@ public partial class SOfficePrerecord
     public long Id { get; set; }
 
     /// <summary>
-    /// Количество талонов час 
+    /// Количество талонов 
     /// </summary>
     public long PrerecordCount { get; set; }
 
@@ -32,6 +32,21 @@ public partial class SOfficePrerecord
     /// Офис
     /// </summary>
     public long SOfficeId { get; set; }
+
+    /// <summary>
+    /// День недели
+    /// </summary>
+    public long SDayWeekId { get; set; }
+
+    /// <summary>
+    /// Начала время предзаписи
+    /// </summary>
+    public TimeOnly StartTimePrerecord { get; set; }
+
+    /// <summary>
+    /// Окончание времени предзаписи
+    /// </summary>
+    public TimeOnly StopTimePrerecord { get; set; }
 
     public virtual SOffice SOffice { get; set; } = null!;
 }

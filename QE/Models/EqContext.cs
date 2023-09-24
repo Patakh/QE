@@ -15,6 +15,10 @@ public partial class EqContext : DbContext
     {
     }
 
+    public EqContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public virtual DbSet<AuthGroup> AuthGroups { get; set; }
 
     public virtual DbSet<AuthGroupPermission> AuthGroupPermissions { get; set; }
@@ -387,6 +391,11 @@ public partial class EqContext : DbContext
                 .HasMaxLength(20)
                 .HasComment("СНИЛС Заявителя")
                 .HasColumnName("customer_snils");
+            entity.Property(e => e.DataAdd)
+                .HasDefaultValueSql("now()")
+                .HasComment("Дата и время добавления записи")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("data_add");
             entity.Property(e => e.DatePrerecord)
                 .HasComment("Дата предзаписи")
                 .HasColumnName("date_prerecord");
@@ -405,13 +414,6 @@ public partial class EqContext : DbContext
             entity.Property(e => e.SSourсePrerecordId)
                 .HasComment("Источник")
                 .HasColumnName("s_sourсe_prerecord_id");
-            entity.Property(e => e.ServicePrefix)
-                .HasMaxLength(1)
-                .HasComment("Префикс")
-                .HasColumnName("service_prefix");
-            entity.Property(e => e.ServicePriority)
-                .HasComment("Приоритет услуги")
-                .HasColumnName("service_priority");
             entity.Property(e => e.StartTimePrerecord)
                 .HasComment("Начала время предзаписи")
                 .HasColumnName("start_time_prerecord");
@@ -719,6 +721,9 @@ public partial class EqContext : DbContext
                 .HasComment("Ключ")
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
+            entity.Property(e => e.CountDayPrerecord)
+                .HasComment("Количество дней для перезаписи")
+                .HasColumnName("count_day_prerecord");
             entity.Property(e => e.DateAdd)
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
@@ -743,13 +748,18 @@ public partial class EqContext : DbContext
 
             entity.ToTable("s_office_prerecord", tb => tb.HasComment("Справочник ограничения по количеству талонов офисов"));
 
-            entity.HasIndex(e => e.Id, "s_office_prerecord_id_idx");
+            entity.HasIndex(e => e.Id, "s_office_prerecord_id_idx").IsUnique();
+
+            entity.HasIndex(e => e.SOfficeId, "s_office_prerecord_idx2");
+
+            entity.HasIndex(e => e.SDayWeekId, "s_office_prerecord_idx3");
 
             entity.Property(e => e.Id)
                 .HasComment("Ключ")
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -758,11 +768,20 @@ public partial class EqContext : DbContext
                 .HasComment("Кто добавил")
                 .HasColumnName("employee_name_add");
             entity.Property(e => e.PrerecordCount)
-                .HasComment("Количество талонов час ")
+                .HasComment("Количество талонов ")
                 .HasColumnName("prerecord_count");
+            entity.Property(e => e.SDayWeekId)
+                .HasComment("День недели")
+                .HasColumnName("s_day_week_id");
             entity.Property(e => e.SOfficeId)
                 .HasComment("Офис")
                 .HasColumnName("s_office_id");
+            entity.Property(e => e.StartTimePrerecord)
+                .HasComment("Начала время предзаписи")
+                .HasColumnName("start_time_prerecord");
+            entity.Property(e => e.StopTimePrerecord)
+                .HasComment("Окончание времени предзаписи")
+                .HasColumnName("stop_time_prerecord");
 
             entity.HasOne(d => d.SOffice).WithMany(p => p.SOfficePrerecords)
                 .HasForeignKey(d => d.SOfficeId)
@@ -1162,6 +1181,7 @@ public partial class EqContext : DbContext
                 .HasComment("Комментарий")
                 .HasColumnName("commentt");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1393,6 +1413,8 @@ public partial class EqContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("users_user_permissions_user_id_92473840_fk_users_id");
         });
+
+
 
         OnModelCreatingPartial(modelBuilder);
     }

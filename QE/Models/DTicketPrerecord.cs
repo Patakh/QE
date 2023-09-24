@@ -29,16 +29,6 @@ public partial class DTicketPrerecord
     public long SSourсePrerecordId { get; set; }
 
     /// <summary>
-    /// Префикс
-    /// </summary>
-    public string ServicePrefix { get; set; } = null!;
-
-    /// <summary>
-    /// Приоритет услуги
-    /// </summary>
-    public long ServicePriority { get; set; }
-
-    /// <summary>
     /// Код предзаписи
     /// </summary>
     public long CodePrerecord { get; set; }
@@ -87,6 +77,11 @@ public partial class DTicketPrerecord
     /// Подтвреждение того что заявитель пришел и встал в очередь
     /// </summary>
     public bool IsConfirmation { get; set; }
+
+    /// <summary>
+    /// Дата и время добавления записи
+    /// </summary>
+    public DateTime? DataAdd { get; set; }
 
     public virtual ICollection<DTicketArchve> DTicketArchves { get; set; } = new List<DTicketArchve>();
 

@@ -33,6 +33,11 @@ public partial class SOffice
     /// </summary>
     public DateTime? DateAdd { get; set; }
 
+    /// <summary>
+    /// Количество дней для перезаписи
+    /// </summary>
+    public long? CountDayPrerecord { get; set; }
+
     public virtual ICollection<DTicketArchve> DTicketArchves { get; set; } = new List<DTicketArchve>();
 
     public virtual ICollection<DTicketPrerecord> DTicketPrerecords { get; set; } = new List<DTicketPrerecord>();

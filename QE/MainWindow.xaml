@@ -101,39 +101,62 @@
                 <Button Content="Б" Width="60" Height="60" />
                 <Button Content="Ю" Width="60" Height="60" />
             </StackPanel>
-            
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Регистр" Width="75" Height="60" />
                 <Button Content="Пробел" Width="150" Height="60" />
-                <Button Content="Очистить" Width="75" Height="60" />
+                <Button Content="Очистить" Width="80" Height="60" />
                 <Button Content="Ввод" Width="75" Height="60" />
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Key="KeyboardNumber" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="1" Width="60" Height="60"  />
-                <Button Content="2" Width="60" Height="60" />
-                <Button Content="3" Width="60" Height="60" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> 
-                <Button Content="4" Width="60" Height="60" />
-                <Button Content="5" Width="60" Height="60" />
-                <Button Content="6" Width="60" Height="60" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> 
-                <Button Content="7" Width="60" Height="60" />
-                <Button Content="8" Width="60" Height="60" />
-                <Button Content="9" Width="60" Height="60" /> 
+                <Button Content="1" Width="75" Height="75"  />
+                <Button Content="2" Width="75" Height="75" />
+                <Button Content="3" Width="75" Height="75" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="0" Width="60" Height="60" />
-                <Button Content="Удалить" Width="60" Height="60" />
-                <Button Content="Ввод" Width="60" Height="60" />
+                <Button Content="4" Width="75" Height="75" />
+                <Button Content="5" Width="75" Height="75" />
+                <Button Content="6" Width="75" Height="75" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="7" Width="75" Height="75" />
+                <Button Content="8" Width="75" Height="75" />
+                <Button Content="9" Width="75" Height="75" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="0" Width="75" Height="75" />
+                <Button Content="Удалить" Width="75" Height="75" />
+                <Button Content="Ввод" Width="75" Height="75" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" x:Key="KeyboardNumberRegistrationAppointment" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="1" Width="100" Height="75"  />
+                <Button Content="2" Width="75" Height="75" />
+                <Button Content="3" Width="100" Height="75" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="4" Width="100" Height="75" />
+                <Button Content="5" Width="75" Height="75" />
+                <Button Content="6" Width="100" Height="75" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="7" Width="100" Height="75" />
+                <Button Content="8" Width="75" Height="75" />
+                <Button Content="9" Width="100" Height="75" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Удалить" Width="100" Height="75" />
+                <Button Content="0" Width="75" Height="75" />
+                <Button Content="Ввод" Width="100" Height="75" />
             </StackPanel>
         </StackPanel>
     </Window.Resources>
     <Grid x:Name="GridMain" Margin="40,40,40,40">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -147,15 +170,14 @@
             <TextBlock x:Name="HeaderTextBlockOfice" HorizontalAlignment="Left" Margin="10" Grid.Column="0" Foreground="White" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
             <StackPanel x:Name="HeaderTextBlock"  HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Center"></StackPanel>
         </Grid>
-
+ 
         <!-- Область содержимого -->
-        <Grid Grid.Row="1" Background="#fff">
+        <Grid Grid.Row="2" Background="#fff">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" /> 
             </Grid.ColumnDefinitions>
-
-            <StackPanel x:Name="BodyWindow" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel x:Name="BodyWindow" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"> 
                 <WrapPanel x:Name="Menu_Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
                 </WrapPanel>
                 <WrapPanel x:Name="Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -167,7 +189,7 @@
         </Grid>
 
         <!-- Нижний колонтитул -->
-        <Grid Grid.Row="2" Height="150"  >
+        <Grid Grid.Row="3" Height="150"  >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -177,28 +199,28 @@
                 <Button Width="100" Height="100" x:Name="CloseButton" BorderBrush="Transparent">
                 </Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center" x:Name="Buttons_Service">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <Button  Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee" x:Name="Button_Click_PreferentialСategoryСitizens">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                        Льготная категория граждан
-                    </TextBlock>
-                </Button>
-            </StackPanel>
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                    <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" x:Name="Button_Click_Pre_registration" Foreground="#700" BorderBrush="#eee">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" x:Name="Button_Click_PreRegistration" Foreground="#700" BorderBrush="#eee">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                        Предварительная запись
-                    </TextBlock>
-                </Button>
-            </StackPanel>
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee">
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" Foreground="#700" BorderBrush="#eee"  x:Name="Button_Click_RegistrationAppointment">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                      Регистрация по предварительной записи
-                    </TextBlock>
-                </Button>
-            </StackPanel>
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
