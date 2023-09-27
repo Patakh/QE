@@ -177,7 +177,7 @@
                         </TextBlock>
                     </Button>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" x:Name="PreRegistration">
                     <Button Background="#fff" Padding="15" FontSize="18" FontWeight="DemiBold" x:Name="Button_Click_PreRegistration" Foreground="#700" BorderBrush="#eee">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                        Предварительная запись

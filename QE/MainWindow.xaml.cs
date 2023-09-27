@@ -24,6 +24,7 @@ using System.Data;
 using Function;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using static System.Net.Mime.MediaTypeNames;
+using ExCSS;
 
 namespace QE
 {
@@ -76,6 +77,8 @@ namespace QE
             HeaderTextBlockOfice.FontSize = 30;
             HeaderTextBlockOfice.Foreground = new SolidColorBrush(Color.FromRgb(44, 54, 75));
             HeaderTextBlockOfice.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+
+            long officeId = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id;
             #endregion
 
             #region Кнопки на главной
@@ -292,30 +295,33 @@ namespace QE
             wrapPanelPreRegistrationMain.Orientation = Orientation.Vertical;
             wrapPanelPreRegistrationMain.Visibility = Visibility.Collapsed;
 
-            //Блок 1 этапа
-            WrapPanel wrapPanelPreRegistrationStage1 = new WrapPanel();
-            wrapPanelPreRegistrationStage1.HorizontalAlignment = HorizontalAlignment.Center;
-            wrapPanelPreRegistrationStage1.Name = "PreRegistrationStage1";
-
-            //Блок 2 этапа
-            WrapPanel wrapPanelPreRegistrationStage2 = new WrapPanel();
-            wrapPanelPreRegistrationStage2.HorizontalAlignment = HorizontalAlignment.Center;
-            wrapPanelPreRegistrationStage2.Name = "PreRegistrationStage2";
-
-            //Блок 3 этапа
-            WrapPanel wrapPanelPreRegistrationStage3 = new WrapPanel();
-            wrapPanelPreRegistrationStage3.HorizontalAlignment = HorizontalAlignment.Center;
-            wrapPanelPreRegistrationStage3.Name = "PreRegistrationStage3";
-
-            //Блок 4 этапа
-            WrapPanel wrapPanelPreRegistrationStage4 = new WrapPanel();
-            wrapPanelPreRegistrationStage4.HorizontalAlignment = HorizontalAlignment.Center;
-            wrapPanelPreRegistrationStage4.VerticalAlignment= VerticalAlignment.Bottom;
-            wrapPanelPreRegistrationStage4.Name = "PreRegistrationStage4";
-
             //нажатие на кнопку "Предварительная запись"
             this.Button_Click_PreRegistration.Click += (s, e) =>
               {
+
+                  if (wrapPanelPreRegistrationMain.Children.Count > 0) wrapPanelPreRegistrationMain.Children.Clear();
+
+                  //Блок 1 этапа
+                  WrapPanel wrapPanelPreRegistrationStage1 = new WrapPanel();
+                  wrapPanelPreRegistrationStage1.HorizontalAlignment = HorizontalAlignment.Center;
+                  wrapPanelPreRegistrationStage1.Name = "PreRegistrationStage1";
+
+                  //Блок 2 этапа
+                  WrapPanel wrapPanelPreRegistrationStage2 = new WrapPanel();
+                  wrapPanelPreRegistrationStage2.HorizontalAlignment = HorizontalAlignment.Center;
+                  wrapPanelPreRegistrationStage2.Name = "PreRegistrationStage2";
+
+                  //Блок 3 этапа
+                  WrapPanel wrapPanelPreRegistrationStage3 = new WrapPanel();
+                  wrapPanelPreRegistrationStage3.HorizontalAlignment = HorizontalAlignment.Center;
+                  wrapPanelPreRegistrationStage3.Name = "PreRegistrationStage3";
+
+                  //Блок 4 этапа
+                  WrapPanel wrapPanelPreRegistrationStage4 = new WrapPanel();
+                  wrapPanelPreRegistrationStage4.HorizontalAlignment = HorizontalAlignment.Center;
+                  wrapPanelPreRegistrationStage4.VerticalAlignment = VerticalAlignment.Bottom;
+                  wrapPanelPreRegistrationStage4.Name = "PreRegistrationStage4";
+
                   WrapPanel wrapPanelStage1Menu = new WrapPanel();
                   wrapPanelStage1Menu.Name = "PreRegistrationStage1Menu";
                   WrapPanel wrapPanelStage1Buttons = new WrapPanel();
@@ -324,12 +330,6 @@ namespace QE
                   wrapPanelPreRegistrationStage1.Visibility = Visibility.Visible;
                   wrapPanelStage1Menu.Visibility = Visibility.Visible;
                   wrapPanelStage1Buttons.Visibility = Visibility.Collapsed;
-
-                  if (wrapPanelPreRegistrationMain.Children.Count > 0) wrapPanelPreRegistrationMain.Children.Clear(); 
-                  if (wrapPanelPreRegistrationStage1.Children.Count > 0) wrapPanelPreRegistrationStage1.Children.Clear();
-                  if (wrapPanelPreRegistrationStage2.Children.Count > 0) wrapPanelPreRegistrationStage2.Children.Clear();
-                  if (wrapPanelPreRegistrationStage3.Children.Count > 0) wrapPanelPreRegistrationStage3.Children.Clear();
-                  if (wrapPanelPreRegistrationStage4.Children.Count > 0) wrapPanelPreRegistrationStage4.Children.Clear();
 
                   #region Кнопка далее и назад
 
@@ -417,10 +417,10 @@ namespace QE
                       {
                           #region создаем кнопку перехода на меню 
                           Button btnMenu = new Button();
-                          DropShadowEffect shadowEffect = new DropShadowEffect();
-                          shadowEffect.Color = Colors.White;
-                          shadowEffect.ShadowDepth = 3;
-                          btnMenu.Effect = shadowEffect;
+                          DropShadowEffect shadowEffectMenu = new DropShadowEffect();
+                          shadowEffectMenu.Color = Colors.White;
+                          shadowEffectMenu.ShadowDepth = 3;
+                          btnMenu.Effect = shadowEffectMenu;
                           btnMenu.Name = "menu";
                           btnMenu.Content = b.ButtonName;
                           btnMenu.HorizontalAlignment = HorizontalAlignment.Center;
@@ -434,19 +434,19 @@ namespace QE
                           btnMenu.FontSize = 25;
                           btnMenu.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                           btnMenu.TabIndex = 999;
-                          ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                          FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-                          border.Name = "border";
-                          border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                          border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                          border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                          border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                          ControlTemplate myControlTemplateMenu = new ControlTemplate(typeof(Button));
+                          FrameworkElementFactory borderMenu = new FrameworkElementFactory(typeof(Border));
+                          borderMenu.Name = "border";
+                          borderMenu.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                          borderMenu.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                          borderMenu.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                          borderMenu.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
                           FrameworkElementFactory contentPresenterMenu = new FrameworkElementFactory(typeof(ContentPresenter));
                           contentPresenterMenu.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
                           contentPresenterMenu.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                          border.AppendChild(contentPresenterMenu);
-                          myControlTemplate.VisualTree = border;
-                          btnMenu.Template = myControlTemplate;
+                          borderMenu.AppendChild(contentPresenterMenu);
+                          myControlTemplateMenu.VisualTree = borderMenu;
+                          btnMenu.Template = myControlTemplateMenu;
                           #endregion
 
                           //все кнопки этого меню
@@ -454,40 +454,47 @@ namespace QE
 
                           //создаем кнопки меню
                           List<SService> sServices = new List<SService>();
-                          WrapPanel wrapPanel = new WrapPanel();
-                          wrapPanel.Orientation = Orientation.Horizontal;
-                          wrapPanel.HorizontalAlignment = HorizontalAlignment.Center;
-                          wrapPanel.Visibility = Visibility.Collapsed;
-                          wrapPanel.MaxWidth = 800;
+                          WrapPanel wrapPanelButtons = new WrapPanel();
+                          wrapPanelButtons.Orientation = Orientation.Horizontal;
+                          wrapPanelButtons.HorizontalAlignment = HorizontalAlignment.Center;
+                          wrapPanelButtons.Visibility = Visibility.Collapsed;
+                          wrapPanelButtons.MaxWidth = 800;
                           SOfficeTerminalButton.ToList().ForEach(button =>
                           {
-                              int Btn_idx = 1;
-                              SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
                               Button btnStage1 = new Button();
-                              btnStage1.Name = "button" + Btn_idx;
-                              btnStage1.Tag = sServices.Id;
+                              btnStage1.Name = "button";
                               btnStage1.Content = button.ButtonName;
                               btnStage1.HorizontalAlignment = HorizontalAlignment.Center;
-                              btnStage1.VerticalAlignment = VerticalAlignment.Center;
+                              btnStage1.VerticalAlignment = VerticalAlignment.Top;
                               btnStage1.Height = 75;
                               btnStage1.Width = 200;
-                              btnStage1.Margin = new Thickness(32, 18, 0, 0);
+                              btnStage1.Margin = new Thickness(0, 18, 32, 0);
                               btnStage1.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
-                              btnStage1.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                              btnStage1.BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 55));
                               btnStage1.FontFamily = new FontFamily("Area");
-                              btnStage1.FontSize = 20;
+                              btnStage1.FontSize = 25;
                               btnStage1.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
-                              DropShadowEffect btnShadowEffect = new DropShadowEffect();
-                              btnShadowEffect.Color = Color.FromRgb(22, 22, 22);
-                              btnShadowEffect.Direction = 50;
-                              btnShadowEffect.ShadowDepth = 2;
-                              btnStage1.Effect = btnShadowEffect;
-                              btnStage1.Template = myControlTemplate;
-
+                              DropShadowEffect btnShadowEffectStage1 = new DropShadowEffect();
+                              btnShadowEffectStage1.Color = Color.FromRgb(22, 22, 22);
+                              btnShadowEffectStage1.Direction = 50;
+                              btnShadowEffectStage1.ShadowDepth = 2;
+                              btnStage1.Effect = btnShadowEffectStage1;
+                              ControlTemplate myControlTemplateStage1 = new ControlTemplate(typeof(Button));
+                              FrameworkElementFactory borderStage1 = new FrameworkElementFactory(typeof(Border));
+                              borderStage1.Name = "border";
+                              borderStage1.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                              borderStage1.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                              borderStage1.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                              borderStage1.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                              FrameworkElementFactory contentPresenterStage1 = new FrameworkElementFactory(typeof(ContentPresenter));
+                              contentPresenterStage1.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                              contentPresenterStage1.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                              borderStage1.AppendChild(contentPresenterStage1);
+                              myControlTemplateStage1.VisualTree = borderStage1;
+                              btnStage1.Template = myControlTemplateStage1;
                               btnStage1.Click += (s, e) =>
                               {
-
-                                  foreach (Button button in wrapPanel.Children)
+                                  foreach (Button button in wrapPanelButtons.Children)
                                   {
                                       button.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
                                   };
@@ -501,14 +508,14 @@ namespace QE
                                   {
                                       btnNextStage.Visibility = Visibility.Hidden;
                                       btnBack.Visibility = Visibility.Hidden;
-                                      btnStage1.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
 
                                       wrapPanelPreRegistrationStage1.Visibility = Visibility.Collapsed;
                                       wrapPanelPreRegistrationStage2.Visibility = Visibility.Visible;
                                       wrapPanelPreRegistrationStage2.Children.Clear();
 
                                       // Кнопки с датами записи
-                                      foreach (var ter in Prerecord.GetPrerecordData(sServices.Id, DateOnly.FromDateTime(DateTime.Now)).DistinctBy(x => x.Date).ToList())
+
+                                      foreach (var ter in Prerecord.GetPrerecordData(button.SServiceId.Value, DateOnly.FromDateTime(DateTime.Now)).DistinctBy(x => x.Date).ToList())
                                       {
                                           Button btnDate = new Button();
                                           btnDate.Content = ter.Date.ToString("d") + "\n" + ter.DayName;
@@ -522,8 +529,9 @@ namespace QE
                                           btnDate.FontFamily = new FontFamily("Area");
                                           btnDate.FontSize = 20;
                                           btnDate.Foreground = new SolidColorBrush(Color.FromRgb(252, 252, 240));
-                                          btnDate.Effect = btnShadowEffect;
-                                          btnDate.Template = myControlTemplate;
+                                          btnDate.Effect = btnShadowEffectStage1;
+                                          btnDate.Template = myControlTemplateStage1;
+
                                           btnDate.Click += (s, e) =>
                                           {
                                               //горение выбраанной кнопки
@@ -539,7 +547,7 @@ namespace QE
                                                   wrapPanelPreRegistrationStage3.Children.Clear();
                                                   wrapPanelPreRegistrationStage3.Visibility = Visibility.Visible;
                                                   // Кнопки с временем записи
-                                                  foreach (var ter in Prerecord.GetPrerecordData(sServices.Id, DateOnly.FromDateTime(DateTime.Now)).DistinctBy(x => x.StopTimePrerecord).ToList())
+                                                  foreach (var ter in Prerecord.GetPrerecordData(button.SServiceId.Value, DateOnly.FromDateTime(DateTime.Now)).DistinctBy(x => x.StopTimePrerecord).ToList())
                                                   {
                                                       Button btnTime = new Button();
                                                       btnTime.Content = ter.StartTimePrerecord.ToString("hh\\:mm") + " - " + ter.StopTimePrerecord.ToString("hh\\:mm");
@@ -553,10 +561,13 @@ namespace QE
                                                       btnTime.FontFamily = new FontFamily("Area");
                                                       btnTime.FontSize = 20;
                                                       btnTime.Foreground = new SolidColorBrush(Color.FromRgb(252, 252, 240));
-                                                      btnTime.Effect = btnShadowEffect;
-                                                      btnTime.Template = myControlTemplate;
+                                                      btnTime.Effect = btnShadowEffectStage1;
+                                                      btnTime.Template = myControlTemplateStage1;
+
+                                                      //переход на 4 этап
                                                       btnTime.Click += (s, e) =>
                                                       {
+
                                                           foreach (Button button in wrapPanelPreRegistrationStage3.Children)
                                                           {
                                                               button.Background = new SolidColorBrush(Color.FromRgb(81, 96, 151));
@@ -567,6 +578,7 @@ namespace QE
                                                           //переход на 4 этап
                                                           btnNextStage.Click += (s, e) =>
                                                           {
+
                                                               textBlockPreRegistration.Margin = new Thickness(0, 0, 0, 50);
                                                               wrapPanelPreRegistrationStage4.Orientation = Orientation.Vertical;
                                                               wrapPanelPreRegistrationStage3.Visibility = Visibility.Collapsed;
@@ -574,7 +586,6 @@ namespace QE
                                                               //поля фио и телефон
                                                               StackPanel stackPanelForm = new StackPanel();
                                                               stackPanelForm.HorizontalAlignment = HorizontalAlignment.Center;
-
 
                                                               TextBox textBoxFio = new TextBox();
                                                               textBoxFio.FontSize = 25;
@@ -587,7 +598,7 @@ namespace QE
                                                               labelFio.FontFamily = new FontFamily("Area");
                                                               labelFio.FontSize = 20;
                                                               labelFio.Content = "ФИО: ";
-                                                               
+
                                                               TextBox textBoxPhone = new TextBox();
                                                               textBoxPhone.FontFamily = new FontFamily("Area");
                                                               textBoxPhone.Padding = new Thickness(5, 8, 5, 8);
@@ -615,10 +626,10 @@ namespace QE
                                                               stackPanelKeyboard.Margin = new Thickness(0, 30, 0, 0);
                                                               stackPanelKeyboard.Children.Clear();
                                                               stackPanelKeyboard.Children.Add((StackPanel)MaimWindow.Resources["Keyboard"]);
-                                                               
+
                                                               //клавиатура цыфры
                                                               StackPanel stackPanelKeyboardNumbers = new StackPanel();
-                                                              stackPanelKeyboardNumbers.Visibility = Visibility.Collapsed; 
+                                                              stackPanelKeyboardNumbers.Visibility = Visibility.Collapsed;
                                                               stackPanelKeyboardNumbers.Children.Clear();
                                                               stackPanelKeyboardNumbers.Children.Add((StackPanel)MaimWindow.Resources["KeyboardNumberPreRegistration"]);
 
@@ -655,7 +666,7 @@ namespace QE
 
                                                                           buttonKeyboard.Click += (s, e) =>
                                                                           {
-                                                                              Button buttonClick = (Button)s; 
+                                                                              Button buttonClick = (Button)s;
                                                                               switch (buttonKeyboard.Content.ToString())
                                                                               {
                                                                                   case "Удалить":
@@ -676,6 +687,7 @@ namespace QE
                                                                                   case "Далее":
                                                                                       stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
                                                                                       stackPanelKeyboard.Visibility = Visibility.Collapsed;
+                                                                                      textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
                                                                                       textBoxPhone.Focus();
                                                                                       break;
                                                                                   case "Регистр":
@@ -696,7 +708,7 @@ namespace QE
                                                                                       textBoxFio.CaretIndex = textBoxFio.Text.Length;
                                                                                       textBoxFio.Focus();
                                                                                       break;
-                                                                              }  
+                                                                              }
                                                                           };
                                                                       }
                                                                   }
@@ -713,7 +725,7 @@ namespace QE
                                                                           buttonKeyboard.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                                                                           buttonKeyboard.FontSize = 18;
                                                                           buttonKeyboard.Click += (s, e) =>
-                                                                          { 
+                                                                          {
                                                                               Button buttonClick = (Button)s;
                                                                               switch (buttonKeyboard.Content.ToString())
                                                                               {
@@ -773,7 +785,6 @@ namespace QE
                                                                   textBoxFio.Focus();
                                                               };
 
-
                                                               textBoxPhone.PreviewMouseDown += (s, e) =>
                                                               {
                                                                   stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
@@ -786,6 +797,33 @@ namespace QE
 
                                                               btnPreRegistrationFinal.Click += (s, e) =>
                                                               {
+                                                                  var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
+                                                                  //записиваю в базу
+                                                                  DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
+                                                                  dTicketPrerecord.SServiceId = button.SServiceId.Value;
+                                                                  dTicketPrerecord.SOfficeId = officeId;
+                                                                  dTicketPrerecord.SSourсePrerecordId = 2;
+                                                                  dTicketPrerecord.CustomerFullName = textBoxFio.Text;
+                                                                  dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
+                                                                  dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
+                                                                  dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
+                                                                  dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
+                                                                  dTicketPrerecord.IsConfirmation = false;
+                                                                  dTicketPrerecord.CodePrerecord = codePrerecord;
+                                                                  eqContext.DTicketPrerecords.Add(dTicketPrerecord);
+                                                                  eqContext.SaveChanges();
+
+                                                                  wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
+
+                                                                  //показываю код
+                                                                  StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                                  TextBlock ResultPreRegistrationCode = new TextBlock();
+                                                                  ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
+                                                                  ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
+                                                                  ResultPreRegistrationCode.FontSize = 100;
+                                                                  stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+
+                                                                  wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
 
                                                               };
 
@@ -799,17 +837,17 @@ namespace QE
                                           wrapPanelPreRegistrationStage2.Children.Add(btnDate);
                                       }
                                   };
-
                               };
-                              wrapPanel.Children.Add(btnStage1);
+
+                              wrapPanelButtons.Children.Add(btnStage1);
                           });
 
-                          wrapPanelStage1Buttons.Children.Add(wrapPanel);
+                          wrapPanelStage1Buttons.Children.Add(wrapPanelButtons);
 
                           btnMenu.Click += (s, e) =>
                           {
                               StackClose.Visibility = Visibility.Visible;
-                              wrapPanel.Visibility = Visibility.Visible;
+                              wrapPanelButtons.Visibility = Visibility.Visible;
                               wrapPanelStage1Buttons.Visibility = Visibility.Visible;
                               wrapPanelStage1Menu.Visibility = Visibility.Collapsed;
                               btnBack.Visibility = Visibility.Visible;
@@ -826,13 +864,13 @@ namespace QE
 
                           btnBack.Click += (s, e) =>
                           {
-                              wrapPanel.Visibility = Visibility.Collapsed;
+                              wrapPanelButtons.Visibility = Visibility.Collapsed;
                               wrapPanelStage1Buttons.Visibility = Visibility.Collapsed;
                               wrapPanelStage1Menu.Visibility = Visibility.Visible;
                               btnBack.Visibility = Visibility.Hidden;
                               btnNextStage.Visibility = Visibility.Hidden;
 
-                              foreach (Button button in wrapPanel.Children)
+                              foreach (Button button in wrapPanelButtons.Children)
                               {
                                   button.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
                               }
@@ -844,53 +882,53 @@ namespace QE
                       if (b.ParentId == 0)
                       {
                           SService sServices = eqContext.SServices.First(f => f.Id == b.SServiceId);
-                          Button btn = new Button();
-                          btn.Name = "button";
-                          btn.Content = b.ButtonName;
-                          btn.HorizontalAlignment = HorizontalAlignment.Center;
-                          btn.VerticalAlignment = VerticalAlignment.Top;
-                          btn.Height = 75;
-                          btn.Width = 200;
-                          btn.Margin = new Thickness(0, 18, 32, 0);
-                          btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
-                          btn.BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 55));
-                          btn.FontFamily = new FontFamily("Area");
-                          btn.FontSize = 25;
-                          btn.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
-                          DropShadowEffect btnShadowEffect = new DropShadowEffect();
-                          btnShadowEffect.Color = Color.FromRgb(22, 22, 22);
-                          btnShadowEffect.Direction = 50;
-                          btnShadowEffect.ShadowDepth = 2;
-                          btn.Effect = btnShadowEffect;  
-                          ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                          FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-                          border.Name = "border";
-                          border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                          border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                          border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                          border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                          FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
-                          contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                          contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                          border.AppendChild(contentPresenter);
-                          myControlTemplate.VisualTree = border;
-                          btn.Template = myControlTemplate;
-                          btn.Click += (s, e) =>
-                          { 
+                          Button btnStage1 = new Button();
+                          btnStage1.Name = "button";
+                          btnStage1.Content = b.ButtonName;
+                          btnStage1.HorizontalAlignment = HorizontalAlignment.Center;
+                          btnStage1.VerticalAlignment = VerticalAlignment.Top;
+                          btnStage1.Height = 75;
+                          btnStage1.Width = 200;
+                          btnStage1.Margin = new Thickness(0, 18, 32, 0);
+                          btnStage1.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                          btnStage1.BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 55));
+                          btnStage1.FontFamily = new FontFamily("Area");
+                          btnStage1.FontSize = 25;
+                          btnStage1.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
+                          DropShadowEffect btnShadowEffectStage1 = new DropShadowEffect();
+                          btnShadowEffectStage1.Color = Color.FromRgb(22, 22, 22);
+                          btnShadowEffectStage1.Direction = 50;
+                          btnShadowEffectStage1.ShadowDepth = 2;
+                          btnStage1.Effect = btnShadowEffectStage1;
+                          ControlTemplate myControlTemplateStage1 = new ControlTemplate(typeof(Button));
+                          FrameworkElementFactory borderStage1 = new FrameworkElementFactory(typeof(Border));
+                          borderStage1.Name = "border";
+                          borderStage1.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                          borderStage1.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                          borderStage1.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                          borderStage1.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                          FrameworkElementFactory contentPresenterStage1 = new FrameworkElementFactory(typeof(ContentPresenter));
+                          contentPresenterStage1.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                          contentPresenterStage1.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                          borderStage1.AppendChild(contentPresenterStage1);
+                          myControlTemplateStage1.VisualTree = borderStage1;
+                          btnStage1.Template = myControlTemplateStage1;
+                          btnStage1.Click += (s, e) =>
+                          {
                               foreach (Button button in wrapPanelStage1Menu.Children)
                               {
-                                  if(wrapPanelStage1Menu.Name== "button") button.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                                  if (wrapPanelStage1Menu.Name == "button") button.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
                               };
 
-                              btn.Background = new SolidColorBrush(Color.FromRgb(100, 250, 255));
+                              btnStage1.Background = new SolidColorBrush(Color.FromRgb(100, 250, 255));
 
                               btnNextStage.Visibility = Visibility.Visible;
 
                               //переход на 2 этап
                               btnNextStage.Click += (s, e) =>
                               {
-                                  btnNextStage.Visibility = Visibility.Hidden; 
-                                  btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                                  btnNextStage.Visibility = Visibility.Hidden;
+                                  btnStage1.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
                                   wrapPanelPreRegistrationStage1.Visibility = Visibility.Collapsed;
                                   wrapPanelPreRegistrationStage2.Visibility = Visibility.Visible;
                                   wrapPanelPreRegistrationStage2.Children.Clear();
@@ -911,13 +949,8 @@ namespace QE
                                       btnDate.FontFamily = new FontFamily("Area");
                                       btnDate.FontSize = 20;
                                       btnDate.Foreground = new SolidColorBrush(Color.FromRgb(252, 252, 240));
-                                      ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                                      DropShadowEffect shadowEffect = new DropShadowEffect();
-                                      shadowEffect.Color = Color.FromRgb(22, 22, 22);
-                                      shadowEffect.Direction = 315;
-                                      shadowEffect.ShadowDepth = 3;
-                                      btnDate.Effect = btnShadowEffect;
-                                      btnDate.Template = myControlTemplate;
+                                      btnDate.Effect = btnShadowEffectStage1;
+                                      btnDate.Template = myControlTemplateStage1;
                                       btnDate.Click += (s, e) =>
                                       {
                                           //горение выбраанной кнопки
@@ -947,18 +980,8 @@ namespace QE
                                                   btnTime.FontFamily = new FontFamily("Area");
                                                   btnTime.FontSize = 20;
                                                   btnTime.Foreground = new SolidColorBrush(Color.FromRgb(252, 252, 240));
-                                                  ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                                                  FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-                                                  border.Name = "border";
-                                                  border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                                                  border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                                                  border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                                                  border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                                                  FrameworkElementFactory contentPresenterMenu = new FrameworkElementFactory(typeof(ContentPresenter));
-                                                  contentPresenterMenu.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                                                  contentPresenterMenu.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                                                  btnTime.Effect = btnShadowEffect;
-                                                  btnTime.Template = myControlTemplate;
+                                                  btnTime.Effect = btnShadowEffectStage1;
+                                                  btnTime.Template = myControlTemplateStage1;
                                                   btnTime.Click += (s, e) =>
                                                   {
                                                       foreach (Button button in wrapPanelPreRegistrationStage3.Children)
@@ -1190,9 +1213,72 @@ namespace QE
 
                                                           btnPreRegistrationFinal.Click += (s, e) =>
                                                           {
+                                                              var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
+                                                              //записиваю в базу
+                                                              DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
+                                                              dTicketPrerecord.SServiceId = b.SServiceId.Value;
+                                                              dTicketPrerecord.SOfficeId = officeId;
+                                                              dTicketPrerecord.SSourсePrerecordId = 2;
+                                                              dTicketPrerecord.CustomerFullName = textBoxFio.Text;
+                                                              dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
+                                                              dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
+                                                              dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
+                                                              dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
+                                                              dTicketPrerecord.IsConfirmation = false;
+                                                              dTicketPrerecord.CodePrerecord = codePrerecord;
+                                                              eqContext.DTicketPrerecords.Add(dTicketPrerecord);
+                                                              eqContext.SaveChanges();
+
+                                                              wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
+
+                                                              //показываю код
+                                                              StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                              TextBlock ResultPreRegistrationCode = new TextBlock();
+                                                              ResultPreRegistrationCode.Text = "Ваш код:\n" + codePrerecord.ToString();
+                                                              ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
+                                                              ResultPreRegistrationCode.FontSize = 100;
+                                                              stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+
+                                                              //печать кода
+                                                              Button buttonPrintResultPreRegistration = new Button();
+                                                              buttonPrintResultPreRegistration.Content = "Печать";
+                                                              buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
+                                                              buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
+                                                              buttonPrintResultPreRegistration.Height = 50;
+                                                              buttonPrintResultPreRegistration.Width = 175;
+                                                              buttonPrintResultPreRegistration.Margin = new Thickness(0, 50, 0, 0);
+                                                              buttonPrintResultPreRegistration.Background = new SolidColorBrush(Colors.DarkGreen);
+                                                              buttonPrintResultPreRegistration.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
+                                                              buttonPrintResultPreRegistration.FontFamily = new FontFamily("Area");
+                                                              buttonPrintResultPreRegistration.FontSize = 20;
+                                                              buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                                                              buttonPrintResultPreRegistration.Click += (s, e) =>
+                                                              {
+                                                                  System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
+                                                                  pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
+                                                                  pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
+                                                                  pd.Print();
+
+                                                                  Home(s,e);
+                                                              };
+                                                              void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+                                                              {
+                                                                  // Установите шрифт и размер текста для печати
+                                                                  System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
+
+                                                                  // Установите позицию, с которой нужно начать печать текста
+                                                                  System.Drawing.PointF location = new System.Drawing.PointF(e.MarginBounds.Left, e.MarginBounds.Top);
+
+                                                                  // Нарисуйте текст на странице
+                                                                  e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
+
+                                                              }
+
+                                                              stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
+                                                              wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
 
                                                           };
-
                                                           wrapPanelPreRegistrationStage4.Children.Add(btnPreRegistrationFinal);
                                                       };
                                                   };
@@ -1202,12 +1288,9 @@ namespace QE
                                       };
                                       wrapPanelPreRegistrationStage2.Children.Add(btnDate);
                                   }
-
-                                  wrapPanelPreRegistrationStage2.Visibility= Visibility.Visible;
                               };
-
                           };
-                          wrapPanelStage1Menu.Children.Add(btn);
+                          wrapPanelStage1Menu.Children.Add(btnStage1);
                       }
                   });
 
@@ -1472,6 +1555,10 @@ namespace QE
             };
             this.CloseButton.Click += (s, e) =>
             {
+                Home(s, e);
+            };
+            void Home(object sender, RoutedEventArgs e)
+            {
                 foreach (WrapPanel obj in Buttnos.Children)
                 {
                     obj.Visibility = Visibility.Collapsed;
@@ -1493,7 +1580,8 @@ namespace QE
                     Button button = (Button)stackPanel.Children[0];
                     button.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                 }
-            };
+            }
+
             #endregion
         }
 
@@ -1552,7 +1640,8 @@ namespace QE
             report.Print();
         }
         #endregion
-
+         
+         
         #region закритие приложения
         private void HandleKeyPress(object sender, KeyEventArgs e)
         {
@@ -1596,5 +1685,35 @@ namespace QE
 
         }
         #endregion
+
+        #region Генерация уникального кода
+        static long GenerateUniqueCode(List<long> existingNumbers)
+        {
+            Random random = new Random();
+
+            while (true)
+            {
+                long code = random.Next(1000, 10000);
+                long[] codeDigits = code.ToString().ToCharArray().Select(c => long.Parse(c.ToString())).ToArray();
+
+                bool isUnique = true;
+                foreach (long digit in codeDigits)
+                {
+                    if (existingNumbers.Contains(digit))
+                    {
+                        isUnique = false;
+                        break;
+                    }
+                }
+
+                if (isUnique)
+                {
+                    return code;
+                }
+            }
+        }
+        #endregion
+
+
     }
 }
