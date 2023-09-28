@@ -104,22 +104,22 @@
         <StackPanel Orientation="Vertical" x:Key="KeyboardNumberRegistrationAppointment" HorizontalAlignment="Center"  x:Shared = "false">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="1" Width="100" Height="75"  />
-                <Button Content="2" Width="75" Height="75" />
+                <Button Content="2" Width="100" Height="75" />
                 <Button Content="3" Width="100" Height="75" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="4" Width="100" Height="75" />
-                <Button Content="5" Width="75" Height="75" />
+                <Button Content="5" Width="100" Height="75" />
                 <Button Content="6" Width="100" Height="75" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="7" Width="100" Height="75" />
-                <Button Content="8" Width="75" Height="75" />
+                <Button Content="8" Width="100" Height="75" />
                 <Button Content="9" Width="100" Height="75" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Удалить" Width="100" Height="75" />
-                <Button Content="0" Width="75" Height="75" />
+                <Button Content="0" Width="100" Height="75" />
                 <Button Content="Ввод" Width="100" Height="75" />
             </StackPanel>
         </StackPanel>

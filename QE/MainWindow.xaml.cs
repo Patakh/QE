@@ -25,6 +25,7 @@ using Function;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using static System.Net.Mime.MediaTypeNames;
 using ExCSS;
+using Microsoft.IdentityModel.Tokens;
 
 namespace QE
 {
@@ -666,9 +667,13 @@ namespace QE
 
                                                                           buttonKeyboard.Click += (s, e) =>
                                                                           {
+                                                                              textBoxFio.BorderBrush = new SolidColorBrush(Colors.Black);
+                                                                              labelFio.Foreground = new SolidColorBrush(Colors.Black);
+
                                                                               Button buttonClick = (Button)s;
                                                                               switch (buttonKeyboard.Content.ToString())
                                                                               {
+
                                                                                   case "Удалить":
                                                                                       textBoxFio.Text = textBoxFio.Text.Length == 0 ? "" : textBoxFio.Text.Substring(0, textBoxFio.Text.Length - 1);
                                                                                       textBoxFio.CaretIndex = textBoxFio.Text.Length;
@@ -685,10 +690,19 @@ namespace QE
                                                                                       textBoxFio.Focus();
                                                                                       break;
                                                                                   case "Далее":
-                                                                                      stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
-                                                                                      stackPanelKeyboard.Visibility = Visibility.Collapsed;
-                                                                                      textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
-                                                                                      textBoxPhone.Focus();
+                                                                                      if (textBoxFio.Text.Length == 0)
+                                                                                      {
+                                                                                          textBoxFio.BorderBrush = new SolidColorBrush(Colors.Red);
+                                                                                          labelFio.Foreground = new SolidColorBrush(Colors.Red);
+                                                                                          labelFio.Content = "ФИО: не заполнено !";
+                                                                                      }
+                                                                                      else
+                                                                                      {
+                                                                                          stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
+                                                                                          stackPanelKeyboard.Visibility = Visibility.Collapsed;
+                                                                                          textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
+                                                                                          textBoxPhone.Focus();
+                                                                                      }
                                                                                       break;
                                                                                   case "Регистр":
                                                                                       upperCase = !upperCase;
@@ -704,6 +718,7 @@ namespace QE
                                                                                       }
                                                                                       break;
                                                                                   default:
+                                                                                      labelFio.Content = "ФИО: ";
                                                                                       textBoxFio.Text += upperCase ? buttonKeyboard.Content.ToString().ToLower() : buttonKeyboard.Content.ToString().ToUpper();
                                                                                       textBoxFio.CaretIndex = textBoxFio.Text.Length;
                                                                                       textBoxFio.Focus();
@@ -727,6 +742,7 @@ namespace QE
                                                                           buttonKeyboard.Click += (s, e) =>
                                                                           {
                                                                               Button buttonClick = (Button)s;
+
                                                                               switch (buttonKeyboard.Content.ToString())
                                                                               {
                                                                                   case "Удалить":
@@ -771,6 +787,7 @@ namespace QE
                                                                                       }
                                                                                       break;
                                                                               }
+                                                                              if (textBoxPhone.Text.Length != 16) btnPreRegistrationFinal.Visibility = Visibility.Collapsed;
                                                                               textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
                                                                               textBoxPhone.Focus();
                                                                           };
@@ -797,34 +814,80 @@ namespace QE
 
                                                               btnPreRegistrationFinal.Click += (s, e) =>
                                                               {
-                                                                  var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
-                                                                  //записиваю в базу
-                                                                  DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
-                                                                  dTicketPrerecord.SServiceId = button.SServiceId.Value;
-                                                                  dTicketPrerecord.SOfficeId = officeId;
-                                                                  dTicketPrerecord.SSourсePrerecordId = 2;
-                                                                  dTicketPrerecord.CustomerFullName = textBoxFio.Text;
-                                                                  dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
-                                                                  dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
-                                                                  dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
-                                                                  dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
-                                                                  dTicketPrerecord.IsConfirmation = false;
-                                                                  dTicketPrerecord.CodePrerecord = codePrerecord;
-                                                                  eqContext.DTicketPrerecords.Add(dTicketPrerecord);
-                                                                  eqContext.SaveChanges();
+                                                                  if (textBoxFio.Text.Length == 0)
+                                                                  {
+                                                                      textBoxFio.BorderBrush = new SolidColorBrush(Colors.Red);
+                                                                      labelFio.Foreground = new SolidColorBrush(Colors.Red);
+                                                                      labelFio.Content = "ФИО: не заполнено !";
+                                                                  }
+                                                                  else
+                                                                  {
 
-                                                                  wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
+                                                                      var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
+                                                                      //записиваю в базу
+                                                                      DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
+                                                                      dTicketPrerecord.SServiceId = button.SServiceId.Value;
+                                                                      dTicketPrerecord.SOfficeId = officeId;
+                                                                      dTicketPrerecord.SSourсePrerecordId = 2;
+                                                                      dTicketPrerecord.CustomerFullName = textBoxFio.Text;
+                                                                      dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
+                                                                      dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
+                                                                      dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
+                                                                      dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
+                                                                      dTicketPrerecord.IsConfirmation = false;
+                                                                      dTicketPrerecord.CodePrerecord = codePrerecord;
+                                                                      eqContext.DTicketPrerecords.Add(dTicketPrerecord);
+                                                                      eqContext.SaveChanges();
 
-                                                                  //показываю код
-                                                                  StackPanel stackPanelResultPreRegistration = new StackPanel();
-                                                                  TextBlock ResultPreRegistrationCode = new TextBlock();
-                                                                  ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
-                                                                  ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
-                                                                  ResultPreRegistrationCode.FontSize = 100;
-                                                                  stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+                                                                      wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
 
-                                                                  wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                                      //показываю код
+                                                                      StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                                      TextBlock ResultPreRegistrationCode = new TextBlock();
+                                                                      ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
+                                                                      ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
+                                                                      ResultPreRegistrationCode.FontSize = 100;
+                                                                      stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
 
+                                                                      //печать кода
+                                                                      Button buttonPrintResultPreRegistration = new Button();
+                                                                      buttonPrintResultPreRegistration.Content = "Печать";
+                                                                      buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
+                                                                      buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
+                                                                      buttonPrintResultPreRegistration.Height = 50;
+                                                                      buttonPrintResultPreRegistration.Width = 175;
+                                                                      buttonPrintResultPreRegistration.Margin = new Thickness(0, 50, 0, 0);
+                                                                      buttonPrintResultPreRegistration.Background = new SolidColorBrush(Colors.DarkGreen);
+                                                                      buttonPrintResultPreRegistration.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
+                                                                      buttonPrintResultPreRegistration.FontFamily = new FontFamily("Area");
+                                                                      buttonPrintResultPreRegistration.FontSize = 20;
+                                                                      buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                                                                      buttonPrintResultPreRegistration.Click += (s, e) =>
+                                                                      {
+                                                                          System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
+                                                                          pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
+                                                                          pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
+                                                                          pd.Print();
+
+                                                                          Home(s, e);
+                                                                      };
+                                                                      void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+                                                                      {
+                                                                          // Установите шрифт и размер текста для печати
+                                                                          System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
+
+                                                                          // Установите позицию, с которой нужно начать печать текста
+                                                                          System.Drawing.PointF location = new System.Drawing.PointF(e.MarginBounds.Left, e.MarginBounds.Top);
+
+                                                                          // Нарисуйте текст на странице
+                                                                          e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
+
+                                                                      }
+
+                                                                      stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
+                                                                      wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                                  }
                                                               };
 
                                                               wrapPanelPreRegistrationStage4.Children.Add(btnPreRegistrationFinal);
@@ -1082,9 +1145,13 @@ namespace QE
 
                                                                       buttonKeyboard.Click += (s, e) =>
                                                                       {
+                                                                          textBoxFio.BorderBrush = new SolidColorBrush(Colors.Black);
+                                                                          labelFio.Foreground = new SolidColorBrush(Colors.Black);
+
                                                                           Button buttonClick = (Button)s;
                                                                           switch (buttonKeyboard.Content.ToString())
                                                                           {
+
                                                                               case "Удалить":
                                                                                   textBoxFio.Text = textBoxFio.Text.Length == 0 ? "" : textBoxFio.Text.Substring(0, textBoxFio.Text.Length - 1);
                                                                                   textBoxFio.CaretIndex = textBoxFio.Text.Length;
@@ -1101,9 +1168,19 @@ namespace QE
                                                                                   textBoxFio.Focus();
                                                                                   break;
                                                                               case "Далее":
-                                                                                  stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
-                                                                                  stackPanelKeyboard.Visibility = Visibility.Collapsed;
-                                                                                  textBoxPhone.Focus();
+                                                                                  if (textBoxFio.Text.Length == 0)
+                                                                                  {
+                                                                                      textBoxFio.BorderBrush = new SolidColorBrush(Colors.Red);
+                                                                                      labelFio.Foreground = new SolidColorBrush(Colors.Red);
+                                                                                      labelFio.Content = "ФИО: не заполнено !";
+                                                                                  }
+                                                                                  else
+                                                                                  {
+                                                                                      stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
+                                                                                      stackPanelKeyboard.Visibility = Visibility.Collapsed;
+                                                                                      textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
+                                                                                      textBoxPhone.Focus();
+                                                                                  }
                                                                                   break;
                                                                               case "Регистр":
                                                                                   upperCase = !upperCase;
@@ -1119,6 +1196,7 @@ namespace QE
                                                                                   }
                                                                                   break;
                                                                               default:
+                                                                                  labelFio.Content = "ФИО: ";
                                                                                   textBoxFio.Text += upperCase ? buttonKeyboard.Content.ToString().ToLower() : buttonKeyboard.Content.ToString().ToUpper();
                                                                                   textBoxFio.CaretIndex = textBoxFio.Text.Length;
                                                                                   textBoxFio.Focus();
@@ -1142,6 +1220,7 @@ namespace QE
                                                                       buttonKeyboard.Click += (s, e) =>
                                                                       {
                                                                           Button buttonClick = (Button)s;
+
                                                                           switch (buttonKeyboard.Content.ToString())
                                                                           {
                                                                               case "Удалить":
@@ -1186,6 +1265,7 @@ namespace QE
                                                                                   }
                                                                                   break;
                                                                           }
+                                                                          if (textBoxPhone.Text.Length != 16) btnPreRegistrationFinal.Visibility = Visibility.Collapsed;
                                                                           textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
                                                                           textBoxPhone.Focus();
                                                                       };
@@ -1200,7 +1280,6 @@ namespace QE
                                                               textBoxFio.Focus();
                                                           };
 
-
                                                           textBoxPhone.PreviewMouseDown += (s, e) =>
                                                           {
                                                               stackPanelKeyboardNumbers.Visibility = Visibility.Visible;
@@ -1213,71 +1292,79 @@ namespace QE
 
                                                           btnPreRegistrationFinal.Click += (s, e) =>
                                                           {
-                                                              var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
-                                                              //записиваю в базу
-                                                              DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
-                                                              dTicketPrerecord.SServiceId = b.SServiceId.Value;
-                                                              dTicketPrerecord.SOfficeId = officeId;
-                                                              dTicketPrerecord.SSourсePrerecordId = 2;
-                                                              dTicketPrerecord.CustomerFullName = textBoxFio.Text;
-                                                              dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
-                                                              dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
-                                                              dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
-                                                              dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
-                                                              dTicketPrerecord.IsConfirmation = false;
-                                                              dTicketPrerecord.CodePrerecord = codePrerecord;
-                                                              eqContext.DTicketPrerecords.Add(dTicketPrerecord);
-                                                              eqContext.SaveChanges();
-
-                                                              wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
-
-                                                              //показываю код
-                                                              StackPanel stackPanelResultPreRegistration = new StackPanel();
-                                                              TextBlock ResultPreRegistrationCode = new TextBlock();
-                                                              ResultPreRegistrationCode.Text = "Ваш код:\n" + codePrerecord.ToString();
-                                                              ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
-                                                              ResultPreRegistrationCode.FontSize = 100;
-                                                              stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
-
-                                                              //печать кода
-                                                              Button buttonPrintResultPreRegistration = new Button();
-                                                              buttonPrintResultPreRegistration.Content = "Печать";
-                                                              buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
-                                                              buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
-                                                              buttonPrintResultPreRegistration.Height = 50;
-                                                              buttonPrintResultPreRegistration.Width = 175;
-                                                              buttonPrintResultPreRegistration.Margin = new Thickness(0, 50, 0, 0);
-                                                              buttonPrintResultPreRegistration.Background = new SolidColorBrush(Colors.DarkGreen);
-                                                              buttonPrintResultPreRegistration.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
-                                                              buttonPrintResultPreRegistration.FontFamily = new FontFamily("Area");
-                                                              buttonPrintResultPreRegistration.FontSize = 20;
-                                                              buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-
-                                                              buttonPrintResultPreRegistration.Click += (s, e) =>
+                                                              if (textBoxFio.Text.Length == 0)
                                                               {
-                                                                  System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
-                                                                  pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
-                                                                  pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
-                                                                  pd.Print();
-
-                                                                  Home(s,e);
-                                                              };
-                                                              void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-                                                              {
-                                                                  // Установите шрифт и размер текста для печати
-                                                                  System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
-
-                                                                  // Установите позицию, с которой нужно начать печать текста
-                                                                  System.Drawing.PointF location = new System.Drawing.PointF(e.MarginBounds.Left, e.MarginBounds.Top);
-
-                                                                  // Нарисуйте текст на странице
-                                                                  e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
-
+                                                                  textBoxFio.BorderBrush = new SolidColorBrush(Colors.Red);
+                                                                  labelFio.Foreground = new SolidColorBrush(Colors.Red);
+                                                                  labelFio.Content = "ФИО: не заполнено !";
                                                               }
+                                                              else
+                                                              {
+                                                                  var codePrerecord = GenerateUniqueCode(eqContext.DTicketPrerecords.Where(w => w.DatePrerecord == DateOnly.Parse(ter.Date.ToString("d"))).Select(s => s.CodePrerecord).ToList());
+                                                                  //записиваю в базу
+                                                                  DTicketPrerecord dTicketPrerecord = new DTicketPrerecord();
+                                                                  dTicketPrerecord.SServiceId = b.SServiceId.Value;
+                                                                  dTicketPrerecord.SOfficeId = officeId;
+                                                                  dTicketPrerecord.SSourсePrerecordId = 2;
+                                                                  dTicketPrerecord.CustomerFullName = textBoxFio.Text;
+                                                                  dTicketPrerecord.CustomerPhoneNumber = textBoxPhone.Text;
+                                                                  dTicketPrerecord.DatePrerecord = DateOnly.Parse(ter.Date.ToString("d"));
+                                                                  dTicketPrerecord.StartTimePrerecord = TimeOnly.Parse(ter.StartTimePrerecord.ToString("hh\\:mm"));
+                                                                  dTicketPrerecord.StopTimePrerecord = TimeOnly.Parse(ter.StopTimePrerecord.ToString("hh\\:mm"));
+                                                                  dTicketPrerecord.IsConfirmation = false;
+                                                                  dTicketPrerecord.CodePrerecord = codePrerecord;
+                                                                  eqContext.DTicketPrerecords.Add(dTicketPrerecord);
+                                                                  eqContext.SaveChanges();
 
-                                                              stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
-                                                              wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                                  wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
 
+                                                                  //показываю код
+                                                                  StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                                  TextBlock ResultPreRegistrationCode = new TextBlock();
+                                                                  ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
+                                                                  ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
+                                                                  ResultPreRegistrationCode.FontSize = 100;
+                                                                  stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+
+                                                                  //печать кода
+                                                                  Button buttonPrintResultPreRegistration = new Button();
+                                                                  buttonPrintResultPreRegistration.Content = "Печать";
+                                                                  buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
+                                                                  buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
+                                                                  buttonPrintResultPreRegistration.Height = 50;
+                                                                  buttonPrintResultPreRegistration.Width = 175;
+                                                                  buttonPrintResultPreRegistration.Margin = new Thickness(0, 50, 0, 0);
+                                                                  buttonPrintResultPreRegistration.Background = new SolidColorBrush(Colors.DarkGreen);
+                                                                  buttonPrintResultPreRegistration.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
+                                                                  buttonPrintResultPreRegistration.FontFamily = new FontFamily("Area");
+                                                                  buttonPrintResultPreRegistration.FontSize = 20;
+                                                                  buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                                                                  buttonPrintResultPreRegistration.Click += (s, e) =>
+                                                                  {
+                                                                      System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
+                                                                      pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
+                                                                      pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
+                                                                      pd.Print();
+
+                                                                      Home(s, e);
+                                                                  };
+                                                                  void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+                                                                  {
+                                                                      // Установите шрифт и размер текста для печати
+                                                                      System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
+
+                                                                      // Установите позицию, с которой нужно начать печать текста
+                                                                      System.Drawing.PointF location = new System.Drawing.PointF(e.MarginBounds.Left, e.MarginBounds.Top);
+
+                                                                      // Нарисуйте текст на странице
+                                                                      e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
+
+                                                                  }
+
+                                                                  stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
+                                                                  wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                              }
                                                           };
                                                           wrapPanelPreRegistrationStage4.Children.Add(btnPreRegistrationFinal);
                                                       };
@@ -1322,7 +1409,7 @@ namespace QE
                   wrapPanelPreRegistrationMain.Children.Add(wrapPanelPreRegistrationStage2);
                   wrapPanelPreRegistrationMain.Children.Add(wrapPanelPreRegistrationStage3);
                   wrapPanelPreRegistrationMain.Children.Add(wrapPanelPreRegistrationStage4);
-                  #endregion
+
 
                   #region подвал PreRegistration
                   WrapPanel wrapPanelPreRegistrationFooter = new WrapPanel();
@@ -1349,6 +1436,7 @@ namespace QE
               };
 
             BodyWindow.Children.Add(wrapPanelPreRegistrationMain);
+            #endregion
 
             #region Кнопка "Льготная категория граждан" 
             TextBlock textBlockPreferentialСategoryСitizens = new TextBlock();
@@ -1444,90 +1532,164 @@ namespace QE
 
             #region Кнопка "Регистрация по предварительной записи"
 
-            TextBlock textBlockRegistrationAppointment = new TextBlock();
-            textBlockRegistrationAppointment.FontFamily = new FontFamily("Area");
-            textBlockRegistrationAppointment.FontSize = 60;
-            textBlockRegistrationAppointment.HorizontalAlignment = HorizontalAlignment.Center;
-            textBlockRegistrationAppointment.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
-            textBlockRegistrationAppointment.Text = "Введите код";
-
-            //ошибки при вводе
-            TextBlock textBlockRegistrationAppointmentError = new TextBlock();
-            textBlockRegistrationAppointmentError.FontFamily = new FontFamily("Area");
-            textBlockRegistrationAppointmentError.FontSize = 30;
-            textBlockRegistrationAppointmentError.HorizontalAlignment = HorizontalAlignment.Center;
-            textBlockRegistrationAppointmentError.Foreground = new SolidColorBrush(Colors.Red);
-
-            //поле для ввода
-            TextBox textBoxRegistrationAppointment = new TextBox();
-            textBoxRegistrationAppointment.FontSize = 50;
-            textBoxRegistrationAppointment.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
-            textBoxRegistrationAppointment.Margin = new Thickness(0, 20, 0, 20);
-            textBoxRegistrationAppointment.TextWrapping = TextWrapping.Wrap;
-            textBoxRegistrationAppointment.Focus();
-
-            StackPanel stackPanelHeadRegistrationAppointment = new StackPanel();
-            stackPanelHeadRegistrationAppointment.Orientation = Orientation.Vertical;
-            stackPanelHeadRegistrationAppointment.VerticalAlignment = VerticalAlignment.Top;
-            stackPanelHeadRegistrationAppointment.Children.Add(textBlockRegistrationAppointment);
-            stackPanelHeadRegistrationAppointment.Children.Add(textBlockRegistrationAppointmentError);
-            stackPanelHeadRegistrationAppointment.Children.Add(textBoxRegistrationAppointment);
-
             WrapPanel wrapPanelRegistrationAppointment = new WrapPanel();
             wrapPanelRegistrationAppointment.Orientation = Orientation.Vertical;
             wrapPanelRegistrationAppointment.VerticalAlignment = VerticalAlignment.Top;
             wrapPanelRegistrationAppointment.Visibility = Visibility.Collapsed;
             wrapPanelRegistrationAppointment.HorizontalAlignment = HorizontalAlignment.Center;
             wrapPanelRegistrationAppointment.Name = "RegistrationAppointment";
-            wrapPanelRegistrationAppointment.Children.Add(stackPanelHeadRegistrationAppointment);
-
-            //клавиатура
-            StackPanel stackPanelKeyboardRegistrationAppointment = new StackPanel();
-            stackPanelKeyboardRegistrationAppointment.Children.Add((StackPanel)this.FindResource("KeyboardNumberRegistrationAppointment"));
-            bool upperCase = false;
-            foreach (StackPanel item in stackPanelKeyboardRegistrationAppointment.Children)
-            {
-                foreach (StackPanel stackPanel in item.Children)
-                {
-                    foreach (Button button in stackPanel.Children)
-                    {
-                        button.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                        button.Foreground = new SolidColorBrush(Colors.Brown);
-                        button.BorderBrush = button.Foreground;
-                        button.FontWeight = FontWeights.Black;
-                        button.FontSize = 20;
-                        button.Margin = new Thickness(5);
-                        button.Click += (s, e) =>
-                        {
-                            Button buttonClick = (Button)s;
-                            textBlockRegistrationAppointmentError.Text = "";
-                            switch (buttonClick.Content.ToString())
-                            {
-                                case "Удалить":
-                                    textBoxRegistrationAppointment.Text = textBoxRegistrationAppointment.Text.Length == 0 ? "" : textBoxRegistrationAppointment.Text.Substring(0, textBoxRegistrationAppointment.Text.Length - 1);
-                                    break;
-                                case "Ввод":
-                                    if (textBoxRegistrationAppointment.Text.Length != 4)
-                                    {
-                                        textBlockRegistrationAppointmentError.Text = "Неверный код !";
-                                    }
-                                    break;
-                                default:
-                                    textBoxRegistrationAppointment.Text += textBoxRegistrationAppointment.Text.Length == 4 ? "" : upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
-                                    break;
-                            }
-                            textBoxRegistrationAppointment.CaretIndex = textBoxRegistrationAppointment.Text.Length;
-                            textBoxRegistrationAppointment.Focus();
-                        };
-                    }
-                }
-            }
-
-            wrapPanelRegistrationAppointment.Children.Add(stackPanelKeyboardRegistrationAppointment);
-            BodyWindow.Children.Add(wrapPanelRegistrationAppointment);
 
             this.Button_Click_RegistrationAppointment.Click += (s, e) =>
             {
+                if(wrapPanelRegistrationAppointment.Children.Count>0) wrapPanelRegistrationAppointment.Children.Clear();
+                TextBlock textBlockRegistrationAppointment = new TextBlock();
+                textBlockRegistrationAppointment.FontFamily = new FontFamily("Area");
+                textBlockRegistrationAppointment.FontSize = 60;
+                textBlockRegistrationAppointment.HorizontalAlignment = HorizontalAlignment.Center;
+                textBlockRegistrationAppointment.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+                textBlockRegistrationAppointment.Text = "Введите код";
+
+                //ошибки при вводе
+                TextBlock textBlockRegistrationAppointmentError = new TextBlock();
+                textBlockRegistrationAppointmentError.FontFamily = new FontFamily("Area");
+                textBlockRegistrationAppointmentError.FontSize = 30;
+                textBlockRegistrationAppointmentError.HorizontalAlignment = HorizontalAlignment.Center;
+                textBlockRegistrationAppointmentError.Foreground = new SolidColorBrush(Colors.Red);
+
+                //поле для ввода
+                TextBox textBoxRegistrationAppointment = new TextBox();
+                textBoxRegistrationAppointment.FontSize = 50;
+                textBoxRegistrationAppointment.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 100));
+                textBoxRegistrationAppointment.Margin = new Thickness(0, 20, 0, 20);
+                textBoxRegistrationAppointment.Width = 310;
+                textBoxRegistrationAppointment.TextWrapping = TextWrapping.Wrap;
+                textBoxRegistrationAppointment.Focus();
+
+                StackPanel stackPanelHeadRegistrationAppointment = new StackPanel();
+                stackPanelHeadRegistrationAppointment.Orientation = Orientation.Vertical;
+                stackPanelHeadRegistrationAppointment.VerticalAlignment = VerticalAlignment.Top;
+                stackPanelHeadRegistrationAppointment.Children.Add(textBlockRegistrationAppointment);
+                stackPanelHeadRegistrationAppointment.Children.Add(textBlockRegistrationAppointmentError);
+                stackPanelHeadRegistrationAppointment.Children.Add(textBoxRegistrationAppointment);
+
+                wrapPanelRegistrationAppointment.Children.Add(stackPanelHeadRegistrationAppointment);
+
+                //клавиатура
+                StackPanel stackPanelKeyboardRegistrationAppointment = new StackPanel();
+                stackPanelKeyboardRegistrationAppointment.Children.Add((StackPanel)this.FindResource("KeyboardNumberRegistrationAppointment"));
+                bool upperCase = false;
+                foreach (StackPanel item in stackPanelKeyboardRegistrationAppointment.Children)
+                {
+                    foreach (StackPanel stackPanel in item.Children)
+                    {
+                        foreach (Button button in stackPanel.Children)
+                        {
+                            button.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                            button.Foreground = new SolidColorBrush(Colors.Brown);
+                            button.BorderBrush = button.Foreground;
+                            button.FontWeight = FontWeights.Black;
+                            button.FontSize = 20;
+                            button.Margin = new Thickness(5);
+                            button.Click += (s, e) =>
+                            {
+                                Button buttonClick = (Button)s;
+                                textBlockRegistrationAppointmentError.Text = "";
+                                textBoxRegistrationAppointment.BorderBrush = new SolidColorBrush(Colors.Black);
+                                textBoxRegistrationAppointment.Foreground = new SolidColorBrush(Colors.Black);
+                                switch (buttonClick.Content.ToString())
+                                {
+                                    case "Удалить":
+                                        textBoxRegistrationAppointment.Text = textBoxRegistrationAppointment.Text.Length == 0 ? "" : textBoxRegistrationAppointment.Text.Substring(0, textBoxRegistrationAppointment.Text.Length - 1);
+                                        break;
+                                    case "Ввод":
+                                        if (textBoxRegistrationAppointment.Text.Length != 4)
+                                        {
+                                            textBlockRegistrationAppointmentError.Text = "Код не коректен !";
+                                            textBoxRegistrationAppointment.BorderBrush = new SolidColorBrush(Colors.Red);
+                                            textBoxRegistrationAppointment.Foreground = new SolidColorBrush(Colors.Red);
+                                        }
+                                        else
+                                        {
+                                            var prerecord = eqContext.DTicketPrerecords.Where(d => d.CodePrerecord == Convert.ToInt64(textBoxRegistrationAppointment.Text) && d.SOfficeId == officeId).FirstOrDefault();
+                                            if (prerecord == null)
+                                            {
+                                                textBlockRegistrationAppointmentError.Text = "Неверный код !";
+                                                textBoxRegistrationAppointment.BorderBrush = new SolidColorBrush(Colors.Red);
+                                                textBoxRegistrationAppointment.Foreground = new SolidColorBrush(Colors.Red);
+                                            }
+                                            else
+                                            if (prerecord.DatePrerecord > DateOnly.FromDateTime(DateTime.Now) || prerecord.StartTimePrerecord > TimeOnly.FromDateTime(DateTime.Now))
+                                            {
+                                                textBlockRegistrationAppointmentError.Text = "Время предварительной записи не вышло.Вы должны явиться " + prerecord.DatePrerecord + " с " + prerecord.StartTimePrerecord + " по " + prerecord.StopTimePrerecord;
+                                            }
+                                            else
+                                            if (prerecord.DatePrerecord < DateOnly.FromDateTime(DateTime.Now) || prerecord.StopTimePrerecord < TimeOnly.FromDateTime(DateTime.Now))
+                                            {
+                                                textBlockRegistrationAppointmentError.Text = "Время предварительной записи вышло.Вы должны были явиться " + prerecord.DatePrerecord + " с " + prerecord.StartTimePrerecord + " по " + prerecord.StopTimePrerecord;
+                                            }
+                                            else
+                                            {
+                                                EqContext eqContext = new EqContext();
+                                                IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+                                                string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
+                                                SService sService = eqContext.SServices.First(f => f.Id == prerecord.SServiceId);
+                                                FastReport.Report report = new FastReport.Report();
+                                                var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))).Replace("\\bin", "") + "\\FastReport\\Operator.frx";
+                                                report.Load(path);
+
+                                                var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
+
+                                                DTicket dTicket_New = new DTicket();
+                                                dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
+                                                dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+                                                dTicket_New.SServiceId = sService.Id;
+                                                dTicket_New.ServicePrefix = sService.ServicePrefix;
+                                                //dTicket.SPriorityId = 1; 
+                                                dTicket_New.TicketNumber = LastTicketNumber + 1;
+                                                dTicket_New.TicketNumberFull = sService.ServicePrefix + (LastTicketNumber + 1);
+                                                dTicket_New.DTicketPrerecordId = prerecord.Id;
+                                                dTicket_New.SStatusId = 1;
+                                                //dTicket.SEmployeeId = 1;
+                                                //dTicket.SOfficeWindowId = 1;
+                                                dTicket_New.DateRegistration = DateOnly.FromDateTime(DateTime.Now);
+                                                dTicket_New.TimeRegistration = TimeOnly.FromDateTime(DateTime.Now);
+
+                                                DTicketStatus dTicketStatus = new DTicketStatus
+                                                {
+                                                    SStatusId = 1
+                                                };
+
+                                                dTicket_New.DTicketStatuses.Add(dTicketStatus);
+                                                eqContext.DTickets.Add(dTicket_New);
+                                                eqContext.DTicketPrerecords.First(f => f.Id == prerecord.Id).IsConfirmation = true;
+
+                                                eqContext.SaveChanges();
+                                                report.SetParameterValue("Operation", sService.ServiceName);
+                                                report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
+                                                report.SetParameterValue("Time", dTicket_New.TimeRegistration);
+                                                report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+                                                report.SetParameterValue("BeforeCount", LastTicketNumber);
+                                                report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+                                                report.Prepare();
+                                                report.PrintSettings.ShowDialog = false;
+                                                report.PrintSettings.PrintOnSheetRawPaperSize = 0;
+                                                report.Print();
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        textBoxRegistrationAppointment.Text += textBoxRegistrationAppointment.Text.Length == 4 ? "" : upperCase ? button.Content.ToString().ToLower() : button.Content.ToString().ToUpper();
+                                        break;
+                                }
+                                textBoxRegistrationAppointment.CaretIndex = textBoxRegistrationAppointment.Text.Length;
+                                textBoxRegistrationAppointment.Focus();
+                            };
+                        }
+                    }
+                }
+
+                wrapPanelRegistrationAppointment.Children.Add(stackPanelKeyboardRegistrationAppointment);
+
                 foreach (WrapPanel obj in BodyWindow.Children)
                 {
                     obj.Visibility = Visibility.Collapsed;
@@ -1545,6 +1707,9 @@ namespace QE
                 }
                 Button_Click_RegistrationAppointment.Background = new SolidColorBrush(Color.FromRgb(240, 250, 220));
             };
+
+            BodyWindow.Children.Add(wrapPanelRegistrationAppointment);
+
             #endregion
 
             #region Кнопка Домой
@@ -1584,10 +1749,6 @@ namespace QE
 
             #endregion
         }
-
-
-
-
 
 
         #region Поставка на очередь
@@ -1640,8 +1801,7 @@ namespace QE
             report.Print();
         }
         #endregion
-         
-         
+
         #region закритие приложения
         private void HandleKeyPress(object sender, KeyEventArgs e)
         {
