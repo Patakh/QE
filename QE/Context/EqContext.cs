@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace QE.Models;
+namespace QE.Context;
 
 public partial class EqContext : DbContext
 {

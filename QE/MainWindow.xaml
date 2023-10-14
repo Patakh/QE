@@ -8,7 +8,7 @@
           xmlns:local="clr-namespace:QE" 
           WindowState="Maximized" d:DesignWidth="721.88">
     <Window.Resources>
-        <StackPanel Orientation="Vertical" x:Key="Keyboard" HorizontalAlignment="Center" x:Shared = "false"> 
+        <StackPanel Orientation="Vertical" x:Key="Keyboard" HorizontalAlignment="Center" x:Shared = "false">
             <!--Keyboard_RU 4-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Й" Width="60" Height="60" />
@@ -22,7 +22,7 @@
                 <Button Content="Щ" Width="60" Height="60" />
                 <Button Content="З" Width="60" Height="60" />
                 <Button Content="Х" Width="60" Height="60" />
-                <Button Content="Ъ" Width="60" Height="60" /> 
+                <Button Content="Ъ" Width="60" Height="60" />
                 <Button Content="Удалить" Width="75" Height="60" />
             </StackPanel>
             <!--Keyboard_RU 5-->
@@ -140,14 +140,14 @@
             <TextBlock x:Name="HeaderTextBlockOfice" HorizontalAlignment="Left" Margin="10" Grid.Column="0" Foreground="White" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
             <StackPanel x:Name="HeaderTextBlock"  HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Center"></StackPanel>
         </Grid>
- 
+
         <!-- Область содержимого -->
         <Grid Grid.Row="2" Background="#fff">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" /> 
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel x:Name="BodyWindow" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"> 
+            <StackPanel x:Name="BodyWindow" Orientation="Vertical" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <WrapPanel x:Name="Menu_Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
                 </WrapPanel>
                 <WrapPanel x:Name="Buttnos" Orientation="Horizontal" MaxWidth="1000" HorizontalAlignment="Center" VerticalAlignment="Center">

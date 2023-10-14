@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QE.Models;
+namespace QE.Context;
 
 public partial class DjangoContentType
 {
