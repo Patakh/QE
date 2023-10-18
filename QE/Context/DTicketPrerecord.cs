@@ -83,6 +83,11 @@ public partial class DTicketPrerecord
     /// </summary>
     public DateTime? DataAdd { get; set; }
 
+    /// <summary>
+    /// Кто добавил
+    /// </summary>
+    public string? EmployeeNameAdd { get; set; }
+
     public virtual ICollection<DTicketArchve> DTicketArchves { get; set; } = new List<DTicketArchve>();
 
     public virtual ICollection<DTicket> DTickets { get; set; } = new List<DTicket>();

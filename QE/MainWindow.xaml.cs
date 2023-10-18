@@ -40,7 +40,7 @@ namespace QE
 
             InitializeComponent();
 
-            #region Прочие настройки
+                #region Прочие настройки
 
             this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "/img/icon-eq.png"));
 
@@ -266,7 +266,7 @@ namespace QE
                 textSchedulesHead.Text = "Режим работы";
                 Schedules.Children.Add(textSchedulesHead);
 
-                eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id).ToList().ForEach(r =>
+                eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id).OrderBy(d => d.Id).ToList().ForEach(r =>
                  {
                      TextBlock textBlockDayWeek = new TextBlock();
                      textBlockDayWeek.FontFamily = new FontFamily("Area");
@@ -408,12 +408,11 @@ namespace QE
                      #endregion
 
                      TextBlock textBlockPreRegistration = new TextBlock();
-                     textBlockPreRegistration.Text = "Предварительная запись";
-                     textBlockPreRegistration.Visibility = Visibility.Visible;
+                     textBlockPreRegistration.Text = "Предварительная запись"; 
                      textBlockPreRegistration.HorizontalAlignment = HorizontalAlignment.Center;
                      textBlockPreRegistration.FontFamily = new FontFamily("Area");
-                     textBlockPreRegistration.FontSize = 40;
-                     textBlockPreRegistration.Margin = new Thickness(0, 0, 0, 100);
+                     textBlockPreRegistration.FontSize = 25;
+                     textBlockPreRegistration.Margin = new Thickness(0, 30, 0, 0);
                      textBlockPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
 
                      wrapPanelPreRegistrationMain.Children.Add(textBlockPreRegistration);
@@ -631,13 +630,14 @@ namespace QE
 
                                                                  //клавиатура буквы
                                                                  StackPanel stackPanelKeyboard = new StackPanel();
-                                                                 stackPanelKeyboard.Margin = new Thickness(0, 30, 0, 0);
+                                                                 stackPanelKeyboard.Margin = new Thickness(0, 20, 0, 0);
                                                                  stackPanelKeyboard.Children.Clear();
                                                                  stackPanelKeyboard.Children.Add((StackPanel)MaimWindow.Resources["Keyboard"]);
 
                                                                  //клавиатура цыфры
                                                                  StackPanel stackPanelKeyboardNumbers = new StackPanel();
                                                                  stackPanelKeyboardNumbers.Visibility = Visibility.Collapsed;
+                                                                 stackPanelKeyboardNumbers.Margin = new Thickness(0, 20, 0, 0);
                                                                  stackPanelKeyboardNumbers.Children.Clear();
                                                                  stackPanelKeyboardNumbers.Children.Add((StackPanel)MaimWindow.Resources["KeyboardNumberPreRegistration"]);
 
@@ -649,10 +649,11 @@ namespace QE
                                                                  btnPreRegistrationFinal.Effect = shadowPreRegistrationFinal;
                                                                  btnPreRegistrationFinal.Name = "btnPreRegistrationFinal";
                                                                  btnPreRegistrationFinal.Content = "Записаться";
-                                                                 btnPreRegistrationFinal.HorizontalAlignment = HorizontalAlignment.Right;
+                                                                 btnPreRegistrationFinal.HorizontalAlignment = HorizontalAlignment.Center;
                                                                  btnPreRegistrationFinal.VerticalAlignment = VerticalAlignment.Bottom;
                                                                  btnPreRegistrationFinal.Height = 50;
-                                                                 btnPreRegistrationFinal.Width = 175;
+                                                                 btnPreRegistrationFinal.Width = 150;
+                                                                 btnPreRegistrationFinal.Margin = new Thickness(0, 10, 0, 0);
                                                                  btnPreRegistrationFinal.Background = new SolidColorBrush(Colors.DarkGreen);
                                                                  btnPreRegistrationFinal.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
                                                                  btnPreRegistrationFinal.FontFamily = new FontFamily("Area");
@@ -849,17 +850,27 @@ namespace QE
                                                                          wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
 
                                                                          //показываю код
-                                                                         StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                                         WrapPanel wrapPanelResultPreRegistration = new WrapPanel(); 
                                                                          TextBlock ResultPreRegistrationCode = new TextBlock();
-                                                                         ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
+                                                                         ResultPreRegistrationCode.Text = "Ваш код: " + codePrerecord.ToString();
                                                                          ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
                                                                          ResultPreRegistrationCode.FontSize = 100;
-                                                                         stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+                                                                         ResultPreRegistrationCode.TextWrapping = TextWrapping.Wrap;
+
+                                                                         TextBlock ResultPreRegistrationText = new TextBlock();
+                                                                         ResultPreRegistrationText.Text = "Вы должны явиться в " + ter.DayName + " " + dTicketPrerecord.DatePrerecord + "\nс " + dTicketPrerecord.StartTimePrerecord + " по " + dTicketPrerecord.StartTimePrerecord;
+                                                                         ResultPreRegistrationText.HorizontalAlignment = HorizontalAlignment.Center;
+                                                                         ResultPreRegistrationText.FontSize = 40;
+                                                                         ResultPreRegistrationText.Margin = new Thickness(0, 15, 0, 0);
+                                                                         ResultPreRegistrationText.Foreground = new SolidColorBrush(Colors.Green);
+                                                                         ResultPreRegistrationText.TextWrapping = TextWrapping.Wrap;
+                                                                         wrapPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+                                                                         wrapPanelResultPreRegistration.Children.Add(ResultPreRegistrationText);
 
                                                                          //печать кода
                                                                          Button buttonPrintResultPreRegistration = new Button();
                                                                          buttonPrintResultPreRegistration.Content = "Печать";
-                                                                         buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
+                                                                         buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Center;
                                                                          buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
                                                                          buttonPrintResultPreRegistration.Height = 50;
                                                                          buttonPrintResultPreRegistration.Width = 175;
@@ -872,28 +883,26 @@ namespace QE
 
                                                                          buttonPrintResultPreRegistration.Click += (s, e) =>
                                                                          {
-                                                                             System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
-                                                                             pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
-                                                                             pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
-                                                                             pd.Print();
+                                                                             FastReport.Report report = new FastReport.Report();
+                                                                             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\PreRegistration.frx";
+                                                                             report.Load(path);
 
+                                                                             report.SetParameterValue("Code", codePrerecord.ToString());
+                                                                             report.SetParameterValue("DayWeek", ter.DayName);
+                                                                             report.SetParameterValue("DateReg", dTicketPrerecord.DatePrerecord);
+                                                                             report.SetParameterValue("StartTime", dTicketPrerecord.StartTimePrerecord);
+                                                                             report.SetParameterValue("StopTime", dTicketPrerecord.StopTimePrerecord);
+                                                                             report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+
+                                                                             report.Prepare();
+                                                                             report.PrintSettings.ShowDialog = false;
+                                                                             report.PrintSettings.PrintOnSheetRawPaperSize = 0;
+                                                                             report.Print();
                                                                              Home(s, e);
-                                                                         };
-                                                                         void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-                                                                         {
-                                                                             // Установите шрифт и размер текста для печати
-                                                                             System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
+                                                                         }; 
 
-                                                                             // Установите позицию, с которой нужно начать печать текста
-                                                                             System.Drawing.PointF location = new System.Drawing.PointF(0,0);
-
-                                                                             // Нарисуйте текст на странице
-                                                                             e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
-
-                                                                         }
-
-                                                                         stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
-                                                                         wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                                         wrapPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
+                                                                         wrapPanelPreRegistrationMain.Children.Add(wrapPanelResultPreRegistration);
                                                                      }
                                                                  };
 
@@ -1109,13 +1118,14 @@ namespace QE
 
                                                              //клавиатура буквы
                                                              StackPanel stackPanelKeyboard = new StackPanel();
-                                                             stackPanelKeyboard.Margin = new Thickness(0, 30, 0, 0);
+                                                             stackPanelKeyboard.Margin = new Thickness(0, 20, 0, 0);
                                                              stackPanelKeyboard.Children.Clear();
                                                              stackPanelKeyboard.Children.Add((StackPanel)MaimWindow.Resources["Keyboard"]);
 
                                                              //клавиатура цыфры
                                                              StackPanel stackPanelKeyboardNumbers = new StackPanel();
                                                              stackPanelKeyboardNumbers.Visibility = Visibility.Collapsed;
+                                                             stackPanelKeyboard.Margin = new Thickness(0, 20, 0, 0);
                                                              stackPanelKeyboardNumbers.Children.Clear();
                                                              stackPanelKeyboardNumbers.Children.Add((StackPanel)MaimWindow.Resources["KeyboardNumberPreRegistration"]);
 
@@ -1127,10 +1137,11 @@ namespace QE
                                                              btnPreRegistrationFinal.Effect = shadowPreRegistrationFinal;
                                                              btnPreRegistrationFinal.Name = "btnPreRegistrationFinal";
                                                              btnPreRegistrationFinal.Content = "Записаться";
-                                                             btnPreRegistrationFinal.HorizontalAlignment = HorizontalAlignment.Right;
+                                                             btnPreRegistrationFinal.HorizontalAlignment = HorizontalAlignment.Center;
                                                              btnPreRegistrationFinal.VerticalAlignment = VerticalAlignment.Bottom;
                                                              btnPreRegistrationFinal.Height = 50;
-                                                             btnPreRegistrationFinal.Width = 175;
+                                                             btnPreRegistrationFinal.Width = 150;
+                                                             btnPreRegistrationFinal.Margin = new Thickness(0,10,0, 0);
                                                              btnPreRegistrationFinal.Background = new SolidColorBrush(Colors.DarkGreen);
                                                              btnPreRegistrationFinal.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
                                                              btnPreRegistrationFinal.FontFamily = new FontFamily("Area");
@@ -1272,6 +1283,7 @@ namespace QE
                                                                                      }
                                                                                      break;
                                                                              }
+
                                                                              if (textBoxPhone.Text.Length != 16) btnPreRegistrationFinal.Visibility = Visibility.Collapsed;
                                                                              textBoxPhone.CaretIndex = textBoxPhone.Text.Length;
                                                                              textBoxPhone.Focus();
@@ -1326,17 +1338,27 @@ namespace QE
                                                                      wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
 
                                                                      //показываю код
-                                                                     StackPanel stackPanelResultPreRegistration = new StackPanel();
+                                                                     WrapPanel wrapPanelResultPreRegistration = new WrapPanel();
                                                                      TextBlock ResultPreRegistrationCode = new TextBlock();
-                                                                     ResultPreRegistrationCode.Text = "Код:\n" + codePrerecord.ToString();
+                                                                     ResultPreRegistrationCode.Text = "Ваш код: " + codePrerecord.ToString() ;
                                                                      ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
                                                                      ResultPreRegistrationCode.FontSize = 100;
-                                                                     stackPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+                                                                     ResultPreRegistrationCode.TextWrapping = TextWrapping.Wrap;
+
+                                                                     TextBlock ResultPreRegistrationText = new TextBlock();
+                                                                     ResultPreRegistrationText.Text = "Вы должны явиться в " + ter.DayName + " " + dTicketPrerecord.DatePrerecord + "\nс " + dTicketPrerecord.StartTimePrerecord + " по " + dTicketPrerecord.StartTimePrerecord;
+                                                                     ResultPreRegistrationText.HorizontalAlignment = HorizontalAlignment.Center;
+                                                                     ResultPreRegistrationText.FontSize = 40;
+                                                                     ResultPreRegistrationText.Margin =new Thickness(0,15,0,0);
+                                                                     ResultPreRegistrationText.Foreground = new SolidColorBrush(Colors.Green);
+                                                                     ResultPreRegistrationText.TextWrapping = TextWrapping.Wrap;
+                                                                     wrapPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
+                                                                     wrapPanelResultPreRegistration.Children.Add(ResultPreRegistrationText);
 
                                                                      //печать кода
                                                                      Button buttonPrintResultPreRegistration = new Button();
                                                                      buttonPrintResultPreRegistration.Content = "Печать";
-                                                                     buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Right;
+                                                                     buttonPrintResultPreRegistration.HorizontalAlignment = HorizontalAlignment.Center;
                                                                      buttonPrintResultPreRegistration.VerticalAlignment = VerticalAlignment.Bottom;
                                                                      buttonPrintResultPreRegistration.Height = 50;
                                                                      buttonPrintResultPreRegistration.Width = 175;
@@ -1349,28 +1371,25 @@ namespace QE
 
                                                                      buttonPrintResultPreRegistration.Click += (s, e) =>
                                                                      {
-                                                                         System.Drawing.Printing.PrintDocument pd = new System.Drawing.Printing.PrintDocument();
-                                                                         pd.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(PrintPageHandler);
-                                                                         pd.PrinterSettings.PrinterName = pd.PrinterSettings.PrinterName;
-                                                                         pd.Print();
+                                                                         FastReport.Report report = new FastReport.Report();
+                                                                         var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\PreRegistration.frx";
+                                                                         report.Load(path);
+                                                                          
+                                                                         report.SetParameterValue("Code", codePrerecord.ToString());
+                                                                         report.SetParameterValue("DayWeek", ter.DayName);
+                                                                         report.SetParameterValue("DateReg", dTicketPrerecord.DatePrerecord);
+                                                                         report.SetParameterValue("StartTime", dTicketPrerecord.StartTimePrerecord);
+                                                                         report.SetParameterValue("StopTime", dTicketPrerecord.StopTimePrerecord);
+                                                                         report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
 
-                                                                         Home(s, e);
+                                                                         report.Prepare();
+                                                                         report.PrintSettings.ShowDialog = false;
+                                                                         report.Print();
+                                                                         Home(s,e);
                                                                      };
-                                                                     void PrintPageHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-                                                                     {
-                                                                         // Установите шрифт и размер текста для печати
-                                                                         System.Drawing.Font font = new System.Drawing.Font("Arial", 80);
 
-                                                                         // Установите позицию, с которой нужно начать печать текста
-                                                                         System.Drawing.PointF location = new System.Drawing.PointF(e.MarginBounds.Left, e.MarginBounds.Top);
-
-                                                                         // Нарисуйте текст на странице
-                                                                         e.Graphics.DrawString(codePrerecord.ToString(), font, System.Drawing.Brushes.Black, location);
-
-                                                                     }
-
-                                                                     stackPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
-                                                                     wrapPanelPreRegistrationMain.Children.Add(stackPanelResultPreRegistration);
+                                                                     wrapPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
+                                                                     wrapPanelPreRegistrationMain.Children.Add(wrapPanelResultPreRegistration);
                                                                  }
                                                              };
                                                              wrapPanelPreRegistrationStage4.Children.Add(btnPreRegistrationFinal);
@@ -1424,7 +1443,7 @@ namespace QE
                      wrapPanelPreRegistrationFooter.Orientation = Orientation.Horizontal;
 
                      wrapPanelPreRegistrationFooter.VerticalAlignment = VerticalAlignment.Bottom;
-                     wrapPanelPreRegistrationFooter.Margin = new Thickness(0, 50, 0, 0);
+                     wrapPanelPreRegistrationFooter.Margin = new Thickness(0, 40, 0, 0);
 
                      StackPanel stackPanelbtnBack = new StackPanel();
                      stackPanelbtnBack.HorizontalAlignment = HorizontalAlignment.Left;
@@ -1453,11 +1472,31 @@ namespace QE
                 wrapPanelPreferentialСategoryСitizens.HorizontalAlignment = HorizontalAlignment.Center;
                 wrapPanelPreferentialСategoryСitizens.Name = "PreferentialСategoryСitizens";
 
+
                 this.Button_Click_PreferentialСategoryСitizens.Click += (s, e) =>
                 {
                     PreferentialСategoryСitizens();
                     void PreferentialСategoryСitizens()
                     {
+
+                        //кнопка приоритет
+                        WrapPanel wrapPanelPriooritetButons = new WrapPanel();
+                        wrapPanelPriooritetButons.Orientation = Orientation.Horizontal;
+                        wrapPanelPriooritetButons.VerticalAlignment = VerticalAlignment.Center;
+                        wrapPanelPriooritetButons.HorizontalAlignment = HorizontalAlignment.Center;
+
+                        //меню
+                        WrapPanel wrapPanelPriooritetMenu = new WrapPanel();
+                        wrapPanelPriooritetMenu.Orientation = Orientation.Horizontal;
+                        wrapPanelPriooritetMenu.VerticalAlignment = VerticalAlignment.Center;
+                        wrapPanelPriooritetMenu.HorizontalAlignment = HorizontalAlignment.Center;
+
+                        //кнопки меню
+                        WrapPanel wrapPanelPriooritetMenuButons = new WrapPanel();
+                        wrapPanelPriooritetMenuButons.Orientation = Orientation.Horizontal;
+                        wrapPanelPriooritetMenuButons.VerticalAlignment = VerticalAlignment.Center;
+                        wrapPanelPriooritetMenuButons.HorizontalAlignment = HorizontalAlignment.Center;
+
                         if (wrapPanelPreferentialСategoryСitizens.Children.Count > 0) wrapPanelPreferentialСategoryСitizens.Children.Clear();
                         TextBlock textBlockPreferentialСategoryСitizens = new TextBlock();
                         textBlockPreferentialСategoryСitizens.FontFamily = new FontFamily("Area");
@@ -1466,11 +1505,11 @@ namespace QE
                         textBlockPreferentialСategoryСitizens.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
                         textBlockPreferentialСategoryСitizens.TextWrapping = TextWrapping.Wrap;
                         textBlockPreferentialСategoryСitizens.Text = "Льготная категория граждан";
-                        StackPanel stackPanelHeadPreferentialСategoryСitizens = new StackPanel();
-                        stackPanelHeadPreferentialСategoryСitizens.Orientation = Orientation.Vertical;
-                        stackPanelHeadPreferentialСategoryСitizens.VerticalAlignment = VerticalAlignment.Top;
-                        stackPanelHeadPreferentialСategoryСitizens.Children.Add(textBlockPreferentialСategoryСitizens);
-                        wrapPanelPreferentialСategoryСitizens.Children.Add(stackPanelHeadPreferentialСategoryСitizens);
+                        WrapPanel wrapPanelHeadPreferentialСategoryСitizens = new WrapPanel();
+                        wrapPanelHeadPreferentialСategoryСitizens.Orientation = Orientation.Vertical;
+                        wrapPanelHeadPreferentialСategoryСitizens.VerticalAlignment = VerticalAlignment.Top;
+                        wrapPanelHeadPreferentialСategoryСitizens.Children.Add(textBlockPreferentialСategoryСitizens);
+                        wrapPanelPreferentialСategoryСitizens.Children.Add(wrapPanelHeadPreferentialСategoryСitizens);
 
                         #region Кнопка далее и назад
                         Button btnBack = new Button();
@@ -1538,22 +1577,6 @@ namespace QE
                         btnNextStage.Template = myControlTemplateNextStage;
                         #endregion
 
-                        WrapPanel wrapPanelPriooritetButons = new WrapPanel();
-                        wrapPanelPriooritetButons.Orientation = Orientation.Horizontal;
-                        wrapPanelPriooritetButons.VerticalAlignment = VerticalAlignment.Center;
-                        wrapPanelPriooritetButons.HorizontalAlignment = HorizontalAlignment.Center;
-
-                        //меню
-                        WrapPanel wrapPanelPriooritetMenu = new WrapPanel();
-                        wrapPanelPriooritetMenu.Orientation = Orientation.Horizontal;
-                        wrapPanelPriooritetMenu.VerticalAlignment = VerticalAlignment.Center;
-                        wrapPanelPriooritetMenu.HorizontalAlignment = HorizontalAlignment.Center;
-
-                        //кнопки меню
-                        WrapPanel wrapPanelPriooritetMenuButons = new WrapPanel();
-                        wrapPanelPriooritetMenuButons.Orientation = Orientation.Horizontal;
-                        wrapPanelPriooritetMenuButons.VerticalAlignment = VerticalAlignment.Center;
-                        wrapPanelPriooritetMenuButons.HorizontalAlignment = HorizontalAlignment.Center;
                         //кнопки категории
                         if (eqContext.SPriorities.Any())
                         {
@@ -1573,7 +1596,6 @@ namespace QE
                                 shadowEffectPriooritet.Color = Colors.White;
                                 shadowEffectPriooritet.ShadowDepth = 3;
                                 btnPriooritet.Effect = shadowEffectPriooritet;
-                                btnPriooritet.Name = "buttonPriooritet";
                                 btnPriooritet.Content = textBtnPriooritet;
                                 btnPriooritet.HorizontalAlignment = HorizontalAlignment.Center;
                                 btnPriooritet.VerticalAlignment = VerticalAlignment.Top;
@@ -1604,9 +1626,13 @@ namespace QE
                                     btnBack.Click += (s, e) =>
                                     {
                                         PreferentialСategoryСitizens();
+                                        textBlockPreferentialСategoryСitizens.Text = "Льготная категория граждан";
                                     };
 
+                                    textBlockPreferentialСategoryСitizens.Text = "Льготная категория граждан: " + priooritet.PriorityName;
+
                                     wrapPanelPriooritetButons.Visibility = Visibility.Collapsed;
+
                                     eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                                     {
                                         if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
@@ -1743,7 +1769,7 @@ namespace QE
                                                     report.SetParameterValue("Time", dTicket_New.TimeRegistration);
                                                     report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                     report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
                                                     report.Prepare();
                                                     report.PrintSettings.ShowDialog = false;
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
@@ -1834,7 +1860,7 @@ namespace QE
                                                 report.SetParameterValue("Time", dTicket_New.TimeRegistration);
                                                 report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                 report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+                                                report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
                                                 report.Prepare();
                                                 report.PrintSettings.ShowDialog = false;
                                                 report.PrintSettings.PrintOnSheetRawPaperSize = 0;
@@ -1863,12 +1889,19 @@ namespace QE
                                         }
                                     });
                                 };
+
+                                wrapPanelPreferentialСategoryСitizens.Children.Remove(wrapPanelPriooritetMenu);
+                                wrapPanelPreferentialСategoryСitizens.Children.Remove(wrapPanelPriooritetMenuButons);
+                                wrapPanelPreferentialСategoryСitizens.Children.Remove(btnPriooritet);
+
                                 wrapPanelPreferentialСategoryСitizens.Children.Add(wrapPanelPriooritetMenu);
                                 wrapPanelPreferentialСategoryСitizens.Children.Add(wrapPanelPriooritetMenuButons);
                                 wrapPanelPriooritetButons.Children.Add(btnPriooritet);
                             });
                         }
+
                         wrapPanelPreferentialСategoryСitizens.Children.Add(wrapPanelPriooritetButons);
+
                         #region подвал PreRegistration 
                         WrapPanel wrapPanelPriooritetFooter = new WrapPanel();
                         wrapPanelPriooritetFooter.Name = "PreRegistrationFooter";
@@ -1910,7 +1943,6 @@ namespace QE
 
 
                         wrapPanelPreferentialСategoryСitizens.Children.Add(wrapPanelPriooritetFooter);
-
                     };
                 };
 
@@ -2058,7 +2090,7 @@ namespace QE
                                                     report.SetParameterValue("Time", dTicket_New.TimeRegistration);
                                                     report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                     report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
                                                     report.Prepare();
                                                     report.PrintSettings.ShowDialog = false;
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
@@ -2146,10 +2178,10 @@ namespace QE
                 }
 
                 #endregion
+
             }
 
         }
-
 
         #region Поставка на очередь
         private async Task Click_Button(object sender, RoutedEventArgs e, SService sService)
@@ -2194,7 +2226,7 @@ namespace QE
             report.SetParameterValue("Time", dTicket_New.TimeRegistration);
             report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
             report.SetParameterValue("BeforeCount", LastTicketNumber);
-            report.SetParameterValue("MFC", eqContext.SOffices.First(s => s.Id == 1).OfficeName);
+            report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
             report.Prepare();
             report.PrintSettings.ShowDialog = false;
             report.PrintSettings.PrintOnSheetRawPaperSize = 0;

@@ -15,10 +15,6 @@ public partial class EqContext : DbContext
     {
     }
 
-    public EqContext(DbContextOptions options) : base(options)
-    {
-    }
-
     public virtual DbSet<AuthGroup> AuthGroups { get; set; }
 
     public virtual DbSet<AuthGroupPermission> AuthGroupPermissions { get; set; }
@@ -399,6 +395,10 @@ public partial class EqContext : DbContext
             entity.Property(e => e.DatePrerecord)
                 .HasComment("Дата предзаписи")
                 .HasColumnName("date_prerecord");
+            entity.Property(e => e.EmployeeNameAdd)
+                .HasMaxLength(70)
+                .HasComment("Кто добавил")
+                .HasColumnName("employee_name_add");
             entity.Property(e => e.IsConfirmation)
                 .HasComment("Подтвреждение того что заявитель пришел и встал в очередь")
                 .HasColumnName("is_confirmation");
@@ -460,15 +460,19 @@ public partial class EqContext : DbContext
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasComment("Дата")
                 .HasColumnName("date_add");
+            entity.Property(e => e.EmployeeNameAdd)
+                .HasMaxLength(70)
+                .HasComment("Кто добавил")
+                .HasColumnName("employee_name_add");
             entity.Property(e => e.SEmployeeId)
                 .HasComment("Сотрудник")
                 .HasColumnName("s_employee_id");
             entity.Property(e => e.SOfficeWindowId)
                 .HasComment("Окно")
                 .HasColumnName("s_office_window_id");
-            entity.Property(e => e.SOfficeWindowIdRedirect)
-                .HasComment("Окно куда перенаправили")
-                .HasColumnName("s_office_window_id_redirect");
+            entity.Property(e => e.SOfficeWindowIdTransferred)
+                .HasComment("Окно куда передали")
+                .HasColumnName("s_office_window_id_transferred");
             entity.Property(e => e.SStatusId)
                 .HasComment("Статус")
                 .HasColumnName("s_status_id");
@@ -490,8 +494,8 @@ public partial class EqContext : DbContext
                 .HasForeignKey(d => d.SOfficeWindowId)
                 .HasConstraintName("d_ticket_status_fk_2");
 
-            entity.HasOne(d => d.SOfficeWindowIdRedirectNavigation).WithMany(p => p.DTicketStatusSOfficeWindowIdRedirectNavigations)
-                .HasForeignKey(d => d.SOfficeWindowIdRedirect)
+            entity.HasOne(d => d.SOfficeWindowIdTransferredNavigation).WithMany(p => p.DTicketStatusSOfficeWindowIdTransferredNavigations)
+                .HasForeignKey(d => d.SOfficeWindowIdTransferred)
                 .HasConstraintName("d_ticket_status_fk_4");
 
             entity.HasOne(d => d.SStatus).WithMany(p => p.DTicketStatuses)
@@ -518,6 +522,10 @@ public partial class EqContext : DbContext
             entity.Property(e => e.DateAdd)
                 .HasComment("Дата")
                 .HasColumnName("date_add");
+            entity.Property(e => e.EmployeeNameAdd)
+                .HasMaxLength(70)
+                .HasComment("Кто добавил")
+                .HasColumnName("employee_name_add");
             entity.Property(e => e.SEmployeeId)
                 .HasComment("Сотрудник")
                 .HasColumnName("s_employee_id");
@@ -859,6 +867,10 @@ public partial class EqContext : DbContext
             entity.Property(e => e.SOfficeId)
                 .HasComment("Офис")
                 .HasColumnName("s_office_id");
+            entity.Property(e => e.ScoreboardIp)
+                .HasMaxLength(20)
+                .HasComment("Ip адрес ")
+                .HasColumnName("scoreboard_ip");
             entity.Property(e => e.ScoreboardName)
                 .HasMaxLength(70)
                 .HasComment("Наименование")
@@ -924,6 +936,7 @@ public partial class EqContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1050,6 +1063,7 @@ public partial class EqContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1098,6 +1112,7 @@ public partial class EqContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1136,6 +1151,7 @@ public partial class EqContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.DateAdd)
+                .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_add");
@@ -1413,8 +1429,6 @@ public partial class EqContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("users_user_permissions_user_id_92473840_fk_users_id");
         });
-
-
 
         OnModelCreatingPartial(modelBuilder);
     }

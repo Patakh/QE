@@ -38,6 +38,11 @@ public partial class SOfficeScoreboard
     /// </summary>
     public DateTime? DateAdd { get; set; }
 
+    /// <summary>
+    /// Ip адрес 
+    /// </summary>
+    public string? ScoreboardIp { get; set; }
+
     public virtual SOffice SOffice { get; set; } = null!;
 
     public virtual ICollection<SOfficeScoreboardMultimedium> SOfficeScoreboardMultimedia { get; set; } = new List<SOfficeScoreboardMultimedium>();

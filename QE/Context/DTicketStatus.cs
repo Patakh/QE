@@ -34,9 +34,9 @@ public partial class DTicketStatus
     public long? SOfficeWindowId { get; set; }
 
     /// <summary>
-    /// Окно куда перенаправили
+    /// Окно куда передали
     /// </summary>
-    public long? SOfficeWindowIdRedirect { get; set; }
+    public long? SOfficeWindowIdTransferred { get; set; }
 
     /// <summary>
     /// Дата
@@ -48,13 +48,18 @@ public partial class DTicketStatus
     /// </summary>
     public TimeOnly TimeAdd { get; set; }
 
+    /// <summary>
+    /// Кто добавил
+    /// </summary>
+    public string? EmployeeNameAdd { get; set; }
+
     public virtual DTicket DTicket { get; set; } = null!;
 
     public virtual SEmployee? SEmployee { get; set; }
 
     public virtual SOfficeWindow? SOfficeWindow { get; set; }
 
-    public virtual SOfficeWindow? SOfficeWindowIdRedirectNavigation { get; set; }
+    public virtual SOfficeWindow? SOfficeWindowIdTransferredNavigation { get; set; }
 
     public virtual SStatus SStatus { get; set; } = null!;
 }

@@ -11,52 +11,52 @@
         <StackPanel Orientation="Vertical" x:Key="Keyboard" HorizontalAlignment="Center" x:Shared = "false">
             <!--Keyboard_RU 4-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Й" Width="60" Height="60" />
-                <Button Content="Ц" Width="60" Height="60" />
-                <Button Content="У" Width="60" Height="60" />
-                <Button Content="К" Width="60" Height="60" />
-                <Button Content="Е" Width="60" Height="60" />
-                <Button Content="Н" Width="60" Height="60" />
-                <Button Content="Г" Width="60" Height="60" />
-                <Button Content="Ш" Width="60" Height="60" />
-                <Button Content="Щ" Width="60" Height="60" />
-                <Button Content="З" Width="60" Height="60" />
-                <Button Content="Х" Width="60" Height="60" />
-                <Button Content="Ъ" Width="60" Height="60" />
-                <Button Content="Удалить" Width="75" Height="60" />
+                <Button Content="Й" Width="48" Height="48" />
+                <Button Content="Ц" Width="48" Height="48" />
+                <Button Content="У" Width="48" Height="48" />
+                <Button Content="К" Width="48" Height="48" />
+                <Button Content="Е" Width="48" Height="48" />
+                <Button Content="Н" Width="48" Height="48" />
+                <Button Content="Г" Width="48" Height="48" />
+                <Button Content="Ш" Width="48" Height="48" />
+                <Button Content="Щ" Width="48" Height="48" />
+                <Button Content="З" Width="48" Height="48" />
+                <Button Content="Х" Width="48" Height="48" />
+                <Button Content="Ъ" Width="48" Height="48" />
+                <Button Content="Удалить" Width="75" Height="48" />
             </StackPanel>
             <!--Keyboard_RU 5-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Ф" Width="60" Height="60" />
-                <Button Content="Ы" Width="60" Height="60" />
-                <Button Content="В" Width="60" Height="60" />
-                <Button Content="А" Width="60" Height="60" />
-                <Button Content="П" Width="60" Height="60" />
-                <Button Content="Р" Width="60" Height="60" />
-                <Button Content="О" Width="60" Height="60" />
-                <Button Content="Л" Width="60" Height="60" />
-                <Button Content="Д" Width="60" Height="60" />
-                <Button Content="Ж" Width="60" Height="60" />
-                <Button Content="Э" Width="60" Height="60" />
+                <Button Content="Ф" Width="48" Height="48" />
+                <Button Content="Ы" Width="48" Height="48" />
+                <Button Content="В" Width="48" Height="48" />
+                <Button Content="А" Width="48" Height="48" />
+                <Button Content="П" Width="48" Height="48" />
+                <Button Content="Р" Width="48" Height="48" />
+                <Button Content="О" Width="48" Height="48" />
+                <Button Content="Л" Width="48" Height="48" />
+                <Button Content="Д" Width="48" Height="48" />
+                <Button Content="Ж" Width="48" Height="48" />
+                <Button Content="Э" Width="48" Height="48" />
             </StackPanel>
             <!--Keyboard_RU 6-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Я" Width="60" Height="60" />
-                <Button Content="Ч" Width="60" Height="60" />
-                <Button Content="С" Width="60" Height="60" />
-                <Button Content="М" Width="60" Height="60" />
-                <Button Content="И" Width="60" Height="60" />
-                <Button Content="Т" Width="60" Height="60" />
-                <Button Content="Ь" Width="60" Height="60" />
-                <Button Content="Б" Width="60" Height="60" />
-                <Button Content="Ю" Width="60" Height="60" />
+                <Button Content="Я" Width="48" Height="48" />
+                <Button Content="Ч" Width="48" Height="48" />
+                <Button Content="С" Width="48" Height="48" />
+                <Button Content="М" Width="48" Height="48" />
+                <Button Content="И" Width="48" Height="48" />
+                <Button Content="Т" Width="48" Height="48" />
+                <Button Content="Ь" Width="48" Height="48" />
+                <Button Content="Б" Width="48" Height="48" />
+                <Button Content="Ю" Width="48" Height="48" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Регистр" Width="75" Height="60" />
-                <Button Content="Пробел" Width="150" Height="60" />
-                <Button Content="Очистить" Width="80" Height="60" />
-                <Button Content="Далее" Width="150" Height="60" />
+                <Button Content="Регистр" Width="75" Height="48" />
+                <Button Content="Пробел" Width="150" Height="48" />
+                <Button Content="Очистить" Width="80" Height="48" />
+                <Button Content="Далее" Width="150" Height="48" />
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Key="KeyboardNumber" HorizontalAlignment="Center" x:Shared = "false">
@@ -82,23 +82,23 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Key="KeyboardNumberPreRegistration" HorizontalAlignment="Center"  x:Shared = "false">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="1" Width="75" Height="75"  />
-                <Button Content="2" Width="75" Height="75" />
-                <Button Content="3" Width="75" Height="75" />
+                <Button Content="1" Width="48" Height="48"  />
+                <Button Content="2" Width="48" Height="48" />
+                <Button Content="3" Width="48" Height="48" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="4" Width="75" Height="75" />
-                <Button Content="5" Width="75" Height="75" />
-                <Button Content="6" Width="75" Height="75" />
+                <Button Content="4" Width="48" Height="48" />
+                <Button Content="5" Width="48" Height="48" />
+                <Button Content="6" Width="48" Height="48" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="7" Width="75" Height="75" />
-                <Button Content="8" Width="75" Height="75" />
-                <Button Content="9" Width="75" Height="75" />
+                <Button Content="7" Width="48" Height="48" />
+                <Button Content="8" Width="48" Height="48" />
+                <Button Content="9" Width="48" Height="48" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="0" Width="75" Height="75" />
-                <Button Content="Удалить" Width="158" Height="75" />
+                <Button Content="0" Width="48" Height="48" />
+                <Button Content="Удалить" Width="103" Height="48" />
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Key="KeyboardNumberRegistrationAppointment" HorizontalAlignment="Center"  x:Shared = "false">

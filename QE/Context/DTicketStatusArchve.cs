@@ -48,6 +48,11 @@ public partial class DTicketStatusArchve
     /// </summary>
     public TimeOnly? TimeAdd { get; set; }
 
+    /// <summary>
+    /// Кто добавил
+    /// </summary>
+    public string? EmployeeNameAdd { get; set; }
+
     public virtual DTicketArchve DTicketArchive { get; set; } = null!;
 
     public virtual SEmployee? SEmployee { get; set; }

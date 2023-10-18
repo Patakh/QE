@@ -44,7 +44,7 @@ public partial class SOfficeWindow
 
     public virtual ICollection<DTicketStatusArchve> DTicketStatusArchveSOfficeWindows { get; set; } = new List<DTicketStatusArchve>();
 
-    public virtual ICollection<DTicketStatus> DTicketStatusSOfficeWindowIdRedirectNavigations { get; set; } = new List<DTicketStatus>();
+    public virtual ICollection<DTicketStatus> DTicketStatusSOfficeWindowIdTransferredNavigations { get; set; } = new List<DTicketStatus>();
 
     public virtual ICollection<DTicketStatus> DTicketStatusSOfficeWindows { get; set; } = new List<DTicketStatus>();
 
