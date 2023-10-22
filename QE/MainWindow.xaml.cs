@@ -15,17 +15,8 @@ using Button = System.Windows.Controls.Button;
 using Window = System.Windows.Window;
 using TextBox = System.Windows.Controls.TextBox;
 using System.Windows.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Npgsql;
-using System.Configuration;
-using FastReport.AdvMatrix;
-using NpgsqlTypes;
 using System.Data;
 using Function;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using static System.Net.Mime.MediaTypeNames;
-using ExCSS;
-using Microsoft.IdentityModel.Tokens;
 
 namespace QE
 {
@@ -35,13 +26,15 @@ namespace QE
     public partial class MainWindow : Window
     {
         private DispatcherTimer timer;
+        public string Ip { get; set; }
+
         public MainWindow()
         {
 
             InitializeComponent();
+            GetIp();
 
-                #region Прочие настройки
-
+            #region Прочие настройки 
             this.Icon = new BitmapImage(new System.Uri(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "/img/icon-eq.png"));
 
             Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -52,16 +45,6 @@ namespace QE
             PreviewKeyDown += HandleKeyPress;
             //подключение к базе
             EqContext eqContext = new EqContext();
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            string IpOffise = "";
-
-            foreach (IPAddress address in localIPs)
-            {
-                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    IpOffise = address.ToString();
-                }
-            }
 
             // Создаем таймер для обновления даты и времени каждую секунду
             timer = new DispatcherTimer();
@@ -72,23 +55,23 @@ namespace QE
             // Установка начальных значений даты и времени
             UpdateDateTime();
 
-            if (eqContext.SOfficeTerminals.Where(s => s.IpAddress == IpOffise).Any())
+            if (eqContext.SOfficeTerminals.Where(s => s.IpAddress == Ip).Any())
             {
-                Title = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).TerminalName;
+                Title = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).TerminalName;
                 int Btn_idx = 1;
 
                 // Офис
                 HeaderTextBlockOfice.FontFamily = new FontFamily("Area");
                 HeaderTextBlockOfice.FontSize = 30;
                 HeaderTextBlockOfice.Foreground = new SolidColorBrush(Color.FromRgb(44, 54, 75));
-                HeaderTextBlockOfice.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName;
+                HeaderTextBlockOfice.Text = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName;
 
-                long officeId = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id;
+                long officeId = eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).Id;
                 #endregion
 
                 #region Кнопки на главной
 
-                eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
+                eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                  {
                      if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                      {
@@ -266,7 +249,7 @@ namespace QE
                 textSchedulesHead.Text = "Режим работы";
                 Schedules.Children.Add(textSchedulesHead);
 
-                eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).Id).OrderBy(d => d.Id).ToList().ForEach(r =>
+                eqContext.SOfficeSchedules.Where(k => k.SOfficeId == eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).Id).OrderBy(d => d.Id).ToList().ForEach(r =>
                  {
                      TextBlock textBlockDayWeek = new TextBlock();
                      textBlockDayWeek.FontFamily = new FontFamily("Area");
@@ -408,7 +391,7 @@ namespace QE
                      #endregion
 
                      TextBlock textBlockPreRegistration = new TextBlock();
-                     textBlockPreRegistration.Text = "Предварительная запись"; 
+                     textBlockPreRegistration.Text = "Предварительная запись";
                      textBlockPreRegistration.HorizontalAlignment = HorizontalAlignment.Center;
                      textBlockPreRegistration.FontFamily = new FontFamily("Area");
                      textBlockPreRegistration.FontSize = 25;
@@ -418,7 +401,7 @@ namespace QE
                      wrapPanelPreRegistrationMain.Children.Add(textBlockPreRegistration);
 
                      // меню и кнопки  Предварительная запись
-                     eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
+                     eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                      {
                          if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                          {
@@ -850,7 +833,7 @@ namespace QE
                                                                          wrapPanelPreRegistrationStage4.Visibility = Visibility.Collapsed;
 
                                                                          //показываю код
-                                                                         WrapPanel wrapPanelResultPreRegistration = new WrapPanel(); 
+                                                                         WrapPanel wrapPanelResultPreRegistration = new WrapPanel();
                                                                          TextBlock ResultPreRegistrationCode = new TextBlock();
                                                                          ResultPreRegistrationCode.Text = "Ваш код: " + codePrerecord.ToString();
                                                                          ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
@@ -881,7 +864,7 @@ namespace QE
                                                                          buttonPrintResultPreRegistration.FontSize = 20;
                                                                          buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
-                                                                         buttonPrintResultPreRegistration.Click += (s, e) =>
+                                                                         buttonPrintResultPreRegistration.Click +=  (s, e) =>
                                                                          {
                                                                              FastReport.Report report = new FastReport.Report();
                                                                              var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\PreRegistration.frx";
@@ -892,14 +875,18 @@ namespace QE
                                                                              report.SetParameterValue("DateReg", dTicketPrerecord.DatePrerecord);
                                                                              report.SetParameterValue("StartTime", dTicketPrerecord.StartTimePrerecord);
                                                                              report.SetParameterValue("StopTime", dTicketPrerecord.StopTimePrerecord);
-                                                                             report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+                                                                             report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
 
                                                                              report.Prepare();
                                                                              report.PrintSettings.ShowDialog = false;
                                                                              report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-                                                                             report.Print();
+                                                                             try
+                                                                             {
+                                                                                 report.Print();
+                                                                             }
+                                                                             catch (Exception ex) { }
                                                                              Home(s, e);
-                                                                         }; 
+                                                                         };
 
                                                                          wrapPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
                                                                          wrapPanelPreRegistrationMain.Children.Add(wrapPanelResultPreRegistration);
@@ -913,6 +900,7 @@ namespace QE
                                                      }
                                                  };
                                              };
+
                                              wrapPanelPreRegistrationStage2.Children.Add(btnDate);
                                          }
                                      };
@@ -1141,7 +1129,7 @@ namespace QE
                                                              btnPreRegistrationFinal.VerticalAlignment = VerticalAlignment.Bottom;
                                                              btnPreRegistrationFinal.Height = 50;
                                                              btnPreRegistrationFinal.Width = 150;
-                                                             btnPreRegistrationFinal.Margin = new Thickness(0,10,0, 0);
+                                                             btnPreRegistrationFinal.Margin = new Thickness(0, 10, 0, 0);
                                                              btnPreRegistrationFinal.Background = new SolidColorBrush(Colors.DarkGreen);
                                                              btnPreRegistrationFinal.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
                                                              btnPreRegistrationFinal.FontFamily = new FontFamily("Area");
@@ -1340,7 +1328,7 @@ namespace QE
                                                                      //показываю код
                                                                      WrapPanel wrapPanelResultPreRegistration = new WrapPanel();
                                                                      TextBlock ResultPreRegistrationCode = new TextBlock();
-                                                                     ResultPreRegistrationCode.Text = "Ваш код: " + codePrerecord.ToString() ;
+                                                                     ResultPreRegistrationCode.Text = "Ваш код: " + codePrerecord.ToString();
                                                                      ResultPreRegistrationCode.HorizontalAlignment = HorizontalAlignment.Center;
                                                                      ResultPreRegistrationCode.FontSize = 100;
                                                                      ResultPreRegistrationCode.TextWrapping = TextWrapping.Wrap;
@@ -1349,7 +1337,7 @@ namespace QE
                                                                      ResultPreRegistrationText.Text = "Вы должны явиться в " + ter.DayName + " " + dTicketPrerecord.DatePrerecord + "\nс " + dTicketPrerecord.StartTimePrerecord + " по " + dTicketPrerecord.StartTimePrerecord;
                                                                      ResultPreRegistrationText.HorizontalAlignment = HorizontalAlignment.Center;
                                                                      ResultPreRegistrationText.FontSize = 40;
-                                                                     ResultPreRegistrationText.Margin =new Thickness(0,15,0,0);
+                                                                     ResultPreRegistrationText.Margin = new Thickness(0, 15, 0, 0);
                                                                      ResultPreRegistrationText.Foreground = new SolidColorBrush(Colors.Green);
                                                                      ResultPreRegistrationText.TextWrapping = TextWrapping.Wrap;
                                                                      wrapPanelResultPreRegistration.Children.Add(ResultPreRegistrationCode);
@@ -1374,18 +1362,22 @@ namespace QE
                                                                          FastReport.Report report = new FastReport.Report();
                                                                          var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\PreRegistration.frx";
                                                                          report.Load(path);
-                                                                          
+
                                                                          report.SetParameterValue("Code", codePrerecord.ToString());
                                                                          report.SetParameterValue("DayWeek", ter.DayName);
                                                                          report.SetParameterValue("DateReg", dTicketPrerecord.DatePrerecord);
                                                                          report.SetParameterValue("StartTime", dTicketPrerecord.StartTimePrerecord);
                                                                          report.SetParameterValue("StopTime", dTicketPrerecord.StopTimePrerecord);
-                                                                         report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+                                                                         report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
 
                                                                          report.Prepare();
                                                                          report.PrintSettings.ShowDialog = false;
-                                                                         report.Print();
-                                                                         Home(s,e);
+                                                                         try
+                                                                         {
+                                                                             report.Print();
+                                                                         }
+                                                                         catch (Exception ex) { }
+                                                                         Home(s, e);
                                                                      };
 
                                                                      wrapPanelResultPreRegistration.Children.Add(buttonPrintResultPreRegistration);
@@ -1633,7 +1625,7 @@ namespace QE
 
                                     wrapPanelPriooritetButons.Visibility = Visibility.Collapsed;
 
-                                    eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == IpOffise).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
+                                    eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                                     {
                                         if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
                                         {
@@ -1731,20 +1723,19 @@ namespace QE
                                                 btnBorder.AppendChild(contentPresenter);
                                                 myControlTemplate.VisualTree = btnBorder;
                                                 btn.Template = myControlTemplate;
-                                                btn.Click += (s, e) =>
+                                                btn.Click += async (s, e) =>
                                                 {
                                                     EqContext eqContext = new EqContext();
-                                                    IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-                                                    string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
+
 
                                                     FastReport.Report report = new FastReport.Report();
                                                     var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\Operator.frx";
                                                     report.Load(path);
-                                                    var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sServices.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
+                                                    var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.SServiceId == sServices.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
 
                                                     DTicket dTicket_New = new DTicket();
-                                                    dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-                                                    dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+                                                    dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).SOfficeId;
+                                                    dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).Id;
                                                     dTicket_New.SServiceId = sServices.Id;
                                                     dTicket_New.ServicePrefix = sServices.ServicePrefix;
                                                     dTicket_New.SPriorityId = priooritet.Id;
@@ -1767,13 +1758,18 @@ namespace QE
                                                     report.SetParameterValue("Operation", sServices.ServiceName);
                                                     report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
                                                     report.SetParameterValue("Time", dTicket_New.TimeRegistration);
-                                                    report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+                                                    report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                     report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
                                                     report.Prepare();
                                                     report.PrintSettings.ShowDialog = false;
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-                                                    report.Print();
+                                                    try
+                                                    {
+                                                        report.Print();
+                                                    }
+                                                    catch (Exception ex) { }
+                                                    await Client.SendMessageAsync("new Ticket", Ip);
                                                 };
                                                 wrapPanel.Children.Add(btn);
                                             });
@@ -1821,20 +1817,18 @@ namespace QE
                                             shadowEffect.ShadowDepth = 3;
                                             btn.Effect = shadowEffect;
 
-                                            btn.Click += (s, e) =>
+                                            btn.Click += async (s, e) =>
                                             {
                                                 EqContext eqContext = new EqContext();
-                                                IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-                                                string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
 
                                                 FastReport.Report report = new FastReport.Report();
                                                 var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\Operator.frx";
                                                 report.Load(path);
-                                                var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sServices.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
+                                                var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.SServiceId == sServices.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
 
                                                 DTicket dTicket_New = new DTicket();
-                                                dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-                                                dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+                                                dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).SOfficeId;
+                                                dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).Id;
                                                 dTicket_New.SServiceId = sServices.Id;
                                                 dTicket_New.ServicePrefix = sServices.ServicePrefix;
                                                 dTicket_New.SPriorityId = priooritet.Id;
@@ -1846,7 +1840,7 @@ namespace QE
 
                                                 DTicketStatus dTicketStatus = new DTicketStatus
                                                 {
-                                                    // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
+                                                    // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
                                                     SStatusId = 1
                                                 };
 
@@ -1858,13 +1852,18 @@ namespace QE
                                                 report.SetParameterValue("Operation", sServices.ServiceName);
                                                 report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
                                                 report.SetParameterValue("Time", dTicket_New.TimeRegistration);
-                                                report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+                                                report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                 report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+                                                report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
                                                 report.Prepare();
                                                 report.PrintSettings.ShowDialog = false;
                                                 report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-                                                report.Print();
+                                                try
+                                                {
+                                                    report.Print();
+                                                }
+                                                catch (Exception ex) { }
+                                                await Client.SendMessageAsync("new Ticket", Ip);
                                             };
 
                                             ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
@@ -2011,7 +2010,7 @@ namespace QE
                                 button.FontWeight = FontWeights.Black;
                                 button.FontSize = 20;
                                 button.Margin = new Thickness(5);
-                                button.Click += (s, e) =>
+                                button.Click += async (s, e) =>
                                 {
                                     Button buttonClick = (Button)s;
                                     textBlockRegistrationAppointmentError.Text = "";
@@ -2051,18 +2050,16 @@ namespace QE
                                                 else
                                                 {
                                                     EqContext eqContext = new EqContext();
-                                                    IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-                                                    string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
                                                     SService sService = eqContext.SServices.First(f => f.Id == prerecord.SServiceId);
                                                     FastReport.Report report = new FastReport.Report();
                                                     var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\Operator.frx";
                                                     report.Load(path);
 
-                                                    var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
+                                                    var LastTicketNumber = eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefault();
 
                                                     DTicket dTicket_New = new DTicket();
-                                                    dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-                                                    dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+                                                    dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).SOfficeId;
+                                                    dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).Id;
                                                     dTicket_New.SServiceId = sService.Id;
                                                     dTicket_New.ServicePrefix = sService.ServicePrefix;
                                                     //dTicket.SPriorityId = 1; 
@@ -2088,13 +2085,18 @@ namespace QE
                                                     report.SetParameterValue("Operation", sService.ServiceName);
                                                     report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
                                                     report.SetParameterValue("Time", dTicket_New.TimeRegistration);
-                                                    report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+                                                    report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
                                                     report.SetParameterValue("BeforeCount", LastTicketNumber);
-                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+                                                    report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
                                                     report.Prepare();
                                                     report.PrintSettings.ShowDialog = false;
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-                                                    report.Print();
+                                                    try
+                                                    {
+                                                        report.Print();
+                                                    }
+                                                    catch (Exception ex) { }
+                                                    await Client.SendMessageAsync("new Ticket", Ip);
                                                 }
                                             }
                                             break;
@@ -2187,17 +2189,15 @@ namespace QE
         private async Task Click_Button(object sender, RoutedEventArgs e, SService sService)
         {
             EqContext eqContext = new EqContext();
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            string IpOffise = localIPs.Where(w => w.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Select(w => w.ToString()).First();
 
             FastReport.Report report = new FastReport.Report();
             var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\Operator.frx";
             report.Load(path);
-            var LastTicketNumber = await eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefaultAsync();
+            var LastTicketNumber = await eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.SServiceId == sService.Id && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).OrderByDescending(o => o.TicketNumber).Select(s => s.TicketNumber).FirstOrDefaultAsync();
 
             DTicket dTicket_New = new DTicket();
-            dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).SOfficeId;
-            dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == IpOffise).Id;
+            dTicket_New.SOfficeId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).SOfficeId;
+            dTicket_New.SOfficeTerminalId = eqContext.SOfficeTerminals.First(s => s.IpAddress == Ip).Id;
             dTicket_New.SServiceId = sService.Id;
             dTicket_New.ServicePrefix = sService.ServicePrefix;
             //dTicket.SPriorityId = 1; 
@@ -2212,7 +2212,7 @@ namespace QE
 
             DTicketStatus dTicketStatus = new DTicketStatus
             {
-                // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
+                // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
                 SStatusId = 1
             };
 
@@ -2224,13 +2224,20 @@ namespace QE
             report.SetParameterValue("Operation", sService.ServiceName);
             report.SetParameterValue("Number", dTicket_New.TicketNumberFull);
             report.SetParameterValue("Time", dTicket_New.TimeRegistration);
-            report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == IpOffise && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
+            report.SetParameterValue("TotalQueue", eqContext.DTickets.Where(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == DateOnly.FromDateTime(DateTime.Now)).Count());
             report.SetParameterValue("BeforeCount", LastTicketNumber);
-            report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpOffise).SOfficeId).OfficeName);
+            report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
             report.Prepare();
             report.PrintSettings.ShowDialog = false;
-            report.PrintSettings.PrintOnSheetRawPaperSize = 0;
-            report.Print();
+            report.PrintSettings.PrintOnSheetRawPaperSize = 0; 
+            await Client.SendMessageAsync("new Ticket", Ip);
+
+            try
+            {
+                report.Print();
+            }catch (Exception ex) { }
+
+
         }
         #endregion
 
@@ -2305,7 +2312,22 @@ namespace QE
             }
         }
         #endregion
+          
+        #region получение IP
+        private void GetIp()
+        {
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            string IpOffise = "";
 
-
+            foreach (IPAddress address in localIPs)
+            {
+                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    IpOffise = address.ToString();
+                }
+            }
+            Ip = IpOffise;
+        }
+        #endregion
     }
 }
