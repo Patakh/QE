@@ -131,6 +131,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <!-- Верхний заголовок -->
         <Grid Height="Auto" Grid.Row="0">
             <Grid.ColumnDefinitions>

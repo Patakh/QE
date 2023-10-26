@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 public class Client
 { 
@@ -14,30 +15,32 @@ public class Client
 
         var windows = eqContext.SOfficeWindows.Where(x => x.SOfficeId == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpTerminal).SOfficeId);
 
-        if (windows.Any())
-        {
-            windows.ToList().ForEach(async x =>
-            {
-                // Подключение к серверу
-                try
-                {
-                    using (TcpClient client = new TcpClient())
-                    {
-                        await client.ConnectAsync(IPAddress.Parse(x.WindowIp), 1234);
+         if (windows.Any())
+         {
+             windows.ToList().ForEach(async x =>
+             { 
 
-                        using (NetworkStream stream = client.GetStream())
-                        {
-                            byte[] buffer = Encoding.UTF8.GetBytes(message);
-                            await stream.WriteAsync(buffer, 0, buffer.Length);
-                            Console.WriteLine("Сообщение отправлено: " + message);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
+                 // Подключение к серверу
+                 try
+                 {
+                     using (TcpClient client = new TcpClient())
+                     {
+                         await client.ConnectAsync(IPAddress.Parse(x.WindowIp), 1234);
 
-                }
-            });
-        }
+                         using (NetworkStream stream = client.GetStream())
+                         {
+                             byte[] buffer = Encoding.UTF8.GetBytes(message);
+                             await stream.WriteAsync(buffer, 0, buffer.Length);
+                         }
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                     
+                 }
+
+              });
+         }
+         
     }
 }

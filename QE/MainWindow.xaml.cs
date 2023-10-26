@@ -30,7 +30,6 @@ namespace QE
 
         public MainWindow()
         {
-
             InitializeComponent();
             GetIp();
 
@@ -864,7 +863,7 @@ namespace QE
                                                                          buttonPrintResultPreRegistration.FontSize = 20;
                                                                          buttonPrintResultPreRegistration.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
-                                                                         buttonPrintResultPreRegistration.Click +=  (s, e) =>
+                                                                         buttonPrintResultPreRegistration.Click += (s, e) =>
                                                                          {
                                                                              FastReport.Report report = new FastReport.Report();
                                                                              var path = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory))) + "\\FastReport\\PreRegistration.frx";
@@ -1766,7 +1765,7 @@ namespace QE
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
                                                     try
                                                     {
-                                                        report.Print();
+                                                         report.Print();
                                                     }
                                                     catch (Exception ex) { }
                                                     await Client.SendMessageAsync("new Ticket", Ip);
@@ -2093,7 +2092,7 @@ namespace QE
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
                                                     try
                                                     {
-                                                        report.Print();
+                                                         report.Print();
                                                     }
                                                     catch (Exception ex) { }
                                                     await Client.SendMessageAsync("new Ticket", Ip);
@@ -2182,7 +2181,6 @@ namespace QE
                 #endregion
 
             }
-
         }
 
         #region Поставка на очередь
@@ -2212,7 +2210,7 @@ namespace QE
 
             DTicketStatus dTicketStatus = new DTicketStatus
             {
-                // DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
+                //DTicketId = eqContext.DTickets.First(s => s.SOfficeTerminal.IpAddress == Ip && s.DateRegistration == dTicket_New.DateRegistration && s.TimeRegistration == dTicket_New.TimeRegistration).Id,
                 SStatusId = 1
             };
 
@@ -2229,13 +2227,14 @@ namespace QE
             report.SetParameterValue("MFC", eqContext.SOffices.First(l => l.Id == eqContext.SOfficeTerminals.First(g => g.IpAddress == Ip).SOfficeId).OfficeName);
             report.Prepare();
             report.PrintSettings.ShowDialog = false;
-            report.PrintSettings.PrintOnSheetRawPaperSize = 0; 
+            report.PrintSettings.PrintOnSheetRawPaperSize = 0;
             await Client.SendMessageAsync("new Ticket", Ip);
 
             try
             {
-                report.Print();
-            }catch (Exception ex) { }
+                 report.Print();
+            }
+            catch (Exception ex) { }
 
 
         }
@@ -2312,7 +2311,7 @@ namespace QE
             }
         }
         #endregion
-          
+
         #region получение IP
         private void GetIp()
         {
