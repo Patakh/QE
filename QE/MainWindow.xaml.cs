@@ -1765,7 +1765,7 @@ namespace QE
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
                                                     try
                                                     {
-                                                         report.Print();
+                                                        report.Print();
                                                     }
                                                     catch (Exception ex) { }
                                                     await Client.SendMessageAsync("new Ticket", Ip);
@@ -2092,7 +2092,7 @@ namespace QE
                                                     report.PrintSettings.PrintOnSheetRawPaperSize = 0;
                                                     try
                                                     {
-                                                         report.Print();
+                                                        report.Print();
                                                     }
                                                     catch (Exception ex) { }
                                                     await Client.SendMessageAsync("new Ticket", Ip);
@@ -2232,7 +2232,7 @@ namespace QE
 
             try
             {
-                 report.Print();
+                report.Print();
             }
             catch (Exception ex) { }
 
