@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
-namespace Function;
+namespace QE.Function.DB;
 
 public static class Prerecord
 {
