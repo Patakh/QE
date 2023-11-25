@@ -74,172 +74,202 @@ namespace QE
                 #endregion
 
                 #region Кнопки на главной
+                var buttonMenuList = eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).ToList();
 
-                eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
-                 {
-                     if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
-                     {
-                         //создаем кнопку перехода на меню
-                         Button btnMenu = new Button();
-                         DropShadowEffect shadowEffect = new DropShadowEffect();
-                         shadowEffect.Color = Colors.White;
-                         shadowEffect.ShadowDepth = 3;
-                         btnMenu.Effect = shadowEffect;
-                         btnMenu.Name = "button" + Btn_idx;
-                         btnMenu.Content = b.ButtonName;
-                         btnMenu.HorizontalAlignment = HorizontalAlignment.Center;
-                         btnMenu.VerticalAlignment = VerticalAlignment.Top;
-                         btnMenu.Height = 75;
-                         btnMenu.Width = 200;
-                         btnMenu.Margin = new Thickness(0, 18, 32, 0);
-                         btnMenu.Background = new SolidColorBrush(Colors.DarkRed);
-                         btnMenu.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
-                         btnMenu.FontFamily = new FontFamily("Area");
-                         btnMenu.FontSize = 25;
-                         btnMenu.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                         btnMenu.TabIndex = 999;
-                         ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                         FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-                         border.Name = "border";
-                         border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                         border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                         border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                         border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                         FrameworkElementFactory contentPresenterMenu = new FrameworkElementFactory(typeof(ContentPresenter));
-                         contentPresenterMenu.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                         contentPresenterMenu.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                         border.AppendChild(contentPresenterMenu);
-                         myControlTemplate.VisualTree = border;
-                         btnMenu.Template = myControlTemplate;
+                if (buttonMenuList.Any())
+                {
+                    try
+                    {
+                        var buttonMenu = buttonMenuList.Where(s => s.ParentId == null).ToList();
 
-                         //все кнопки этого меню
-                         var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
-
-                         //Заголовок меню
-                         TextBlock textBlockMenu = new TextBlock();
-                         textBlockMenu.FontFamily = new FontFamily("Area");
-                         textBlockMenu.FontSize = 60;
-                         textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
-                         textBlockMenu.Text = b.ButtonName;
-                         textBlockMenu.TextWrapping = TextWrapping.Wrap;
-
-                         WrapPanel warpPanelHeadMenu = new WrapPanel();
-                         warpPanelHeadMenu.Orientation = Orientation.Horizontal;
-                         warpPanelHeadMenu.VerticalAlignment = VerticalAlignment.Center;
-                         warpPanelHeadMenu.Visibility = Visibility.Collapsed;
-                         warpPanelHeadMenu.Margin = new Thickness(25, 0, 0, 0);
-                         warpPanelHeadMenu.Children.Add(textBlockMenu);
-                         Buttnos.Children.Add(warpPanelHeadMenu);
-
-                         //создаем кнопки меню
-                         List<SService> sServices = new List<SService>();
-                         WrapPanel wrapPanel = new WrapPanel();
-                         wrapPanel.Orientation = Orientation.Horizontal;
-                         wrapPanel.Visibility = Visibility.Collapsed;
-                         wrapPanel.MaxWidth = 800;
-                         SOfficeTerminalButton.ToList().ForEach(button =>
+                        buttonMenu.ForEach(b =>
                          {
-                             int Btn_idx = 1;
-                             SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
-                             Button btn = new Button();
-                             btn.Name = "button" + Btn_idx;
-                             btn.Content = button.ButtonName;
-                             btn.HorizontalAlignment = HorizontalAlignment.Center;
-                             btn.VerticalAlignment = VerticalAlignment.Center;
-                             btn.Height = 75;
-                             btn.Width = 200;
-                             btn.Margin = new Thickness(32, 18, 0, 0);
-                             btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
-                             btn.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 250, 255));
-                             btn.FontFamily = new FontFamily("Area");
-                             btn.FontSize = 20;
-                             btn.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
-                             DropShadowEffect btnShadowEffect = new DropShadowEffect();
-                             btnShadowEffect.Color = Color.FromRgb(22, 22, 22);
-                             btnShadowEffect.Direction = 50;
-                             btnShadowEffect.ShadowDepth = 2;
-                             btn.Effect = btnShadowEffect;
+                             Menu(b);
 
-                             ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                             FrameworkElementFactory btnBorder = new FrameworkElementFactory(typeof(Border));
-                             btnBorder.Name = "border";
-                             btnBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                             btnBorder.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                             btnBorder.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                             btnBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                             FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
-                             contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                             contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                             btnBorder.AppendChild(contentPresenter);
-                             myControlTemplate.VisualTree = btnBorder;
-                             btn.Template = myControlTemplate;
-                             btn.Click += (s, e) =>
+                             void Menu(SOfficeTerminalButton button)
                              {
-                                 Click_Button(s, e, sServices);
-                             };
-                             wrapPanel.Children.Add(btn);
+                                 //создаем кнопку перехода на меню
+                                 Button btnMenu = new Button();
+                                 DropShadowEffect shadowEffect = new DropShadowEffect();
+                                 shadowEffect.Color = Colors.White;
+                                 shadowEffect.ShadowDepth = 3;
+                                 btnMenu.Effect = shadowEffect;
+                                 btnMenu.Name = "button" + Btn_idx;
+                                 btnMenu.Content = button.ButtonName;
+                                 btnMenu.HorizontalAlignment = HorizontalAlignment.Center;
+                                 btnMenu.VerticalAlignment = VerticalAlignment.Top;
+                                 btnMenu.Height = 75;
+                                 btnMenu.Width = 200;
+                                 btnMenu.Margin = new Thickness(0, 18, 32, 0);
+                                 btnMenu.Background = new SolidColorBrush(Colors.DarkRed);
+                                 btnMenu.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 255, 20));
+                                 btnMenu.FontFamily = new FontFamily("Area");
+                                 btnMenu.FontSize = 25;
+                                 btnMenu.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                                 btnMenu.TabIndex = 999;
+                                 ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
+                                 FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
+                                 border.Name = "border";
+                                 border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                                 border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                                 border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                                 border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                                 FrameworkElementFactory contentPresenterMenu = new FrameworkElementFactory(typeof(ContentPresenter));
+                                 contentPresenterMenu.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                                 contentPresenterMenu.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                                 border.AppendChild(contentPresenterMenu);
+                                 myControlTemplate.VisualTree = border;
+                                 btnMenu.Template = myControlTemplate;
+
+                                 //все кнопки этого меню
+                                 var SOfficeTerminalButton = buttonMenuList.Where(s => s.ParentId == button.Id && s.ButtonType == 2).ToList();
+
+                                 var SOfficeTerminalButtonMenu = buttonMenuList.Where(s => s.ParentId == button.Id && s.ButtonType == 1).ToList();
+                                  
+                                 //Заголовок меню
+                                 TextBlock textBlockMenu = new TextBlock();
+                                 textBlockMenu.FontFamily = new FontFamily("Area");
+                                 textBlockMenu.FontSize = 60;
+                                 textBlockMenu.Foreground = new SolidColorBrush(Color.FromRgb(25, 51, 10));
+                                 textBlockMenu.Text = button.ButtonName;
+                                 textBlockMenu.TextWrapping = TextWrapping.Wrap;
+
+                                 WrapPanel warpPanelHeadMenu = new WrapPanel();
+                                 warpPanelHeadMenu.Orientation = Orientation.Horizontal;
+                                 warpPanelHeadMenu.VerticalAlignment = VerticalAlignment.Center;
+                                 warpPanelHeadMenu.Visibility = Visibility.Collapsed;
+                                 warpPanelHeadMenu.Margin = new Thickness(25, 0, 0, 0);
+                                 warpPanelHeadMenu.Children.Add(textBlockMenu);
+                                 Buttnos.Children.Add(warpPanelHeadMenu);
+
+                                 //создаем кнопки меню
+                                 List<SService> sServices = new List<SService>();
+                                 WrapPanel wrapPanel = new WrapPanel();
+                                 wrapPanel.Orientation = Orientation.Horizontal;
+                                 wrapPanel.Visibility = Visibility.Collapsed;
+                                 wrapPanel.MaxWidth = 800;
+
+                                 if (SOfficeTerminalButton.Any())
+                                 {
+
+                                     SOfficeTerminalButton.ForEach(button =>
+                                     {
+                                         int Btn_idx = 1;
+                                         SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
+                                         Button btn = new Button();
+                                         btn.Name = "button" + Btn_idx;
+                                         btn.Content = button.ButtonName;
+                                         btn.HorizontalAlignment = HorizontalAlignment.Center;
+                                         btn.VerticalAlignment = VerticalAlignment.Center;
+                                         btn.Height = 75;
+                                         btn.Width = 200;
+                                         btn.Margin = new Thickness(32, 18, 0, 0);
+                                         btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                                         btn.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                                         btn.FontFamily = new FontFamily("Area");
+                                         btn.FontSize = 20;
+                                         btn.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
+                                         DropShadowEffect btnShadowEffect = new DropShadowEffect();
+                                         btnShadowEffect.Color = Color.FromRgb(22, 22, 22);
+                                         btnShadowEffect.Direction = 50;
+                                         btnShadowEffect.ShadowDepth = 2;
+                                         btn.Effect = btnShadowEffect;
+
+                                         ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
+                                         FrameworkElementFactory btnBorder = new FrameworkElementFactory(typeof(Border));
+                                         btnBorder.Name = "border";
+                                         btnBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                                         btnBorder.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                                         btnBorder.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                                         btnBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                                         FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+                                         contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                                         contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                                         btnBorder.AppendChild(contentPresenter);
+                                         myControlTemplate.VisualTree = btnBorder;
+                                         btn.Template = myControlTemplate;
+                                         btn.Click += (s, e) =>
+                                         {
+                                             Click_Button(s, e, sServices);
+                                         };
+                                         wrapPanel.Children.Add(btn);
+                                     });
+
+                                     Buttnos.Children.Add(wrapPanel);
+                                     btnMenu.Click += (s, e) =>
+                                     {
+                                         StackClose.Visibility = Visibility.Visible;
+                                         wrapPanel.Visibility = Visibility.Visible;
+                                         warpPanelHeadMenu.Visibility = Visibility.Visible;
+                                         Buttnos.Visibility = Visibility.Visible;
+                                         Menu_Buttnos.Visibility = Visibility.Collapsed;
+                                     };
+                                     this.Menu_Buttnos.Children.Add(btnMenu);
+                                 }
+                             }
                          });
-                         Buttnos.Children.Add(wrapPanel);
-                         btnMenu.Click += (s, e) =>
-                         {
-                             StackClose.Visibility = Visibility.Visible;
-                             wrapPanel.Visibility = Visibility.Visible;
-                             warpPanelHeadMenu.Visibility = Visibility.Visible;
-                             Buttnos.Visibility = Visibility.Visible;
-                             Menu_Buttnos.Visibility = Visibility.Collapsed;
-                         };
-                         this.Menu_Buttnos.Children.Add(btnMenu);
-                     }
-                     else
-                     if (b.ParentId == 0)
-                     {
-                         SService sServices = eqContext.SServices.First(f => f.Id == b.SServiceId);
-                         Button btn = new Button();
-                         btn.Name = "button" + Btn_idx;
-                         btn.Content = b.ButtonName;
-                         btn.HorizontalAlignment = HorizontalAlignment.Center;
-                         btn.VerticalAlignment = VerticalAlignment.Top;
-                         btn.Height = 75;
-                         btn.Width = 200;
-                         btn.Margin = new Thickness(0, 18, 32, 0);
-                         btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
-                         btn.BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 55));
-                         btn.FontFamily = new FontFamily("Area");
-                         btn.FontSize = 25;
-                         btn.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
-                         DropShadowEffect shadowEffect = new DropShadowEffect();
-                         shadowEffect.Color = Color.FromRgb(22, 22, 22);
-                         shadowEffect.Direction = 315;
-                         shadowEffect.ShadowDepth = 3;
-                         btn.Effect = shadowEffect;
+                    }
+                    catch (Exception ex)
+                    {
 
-                         btn.Click += (s, e) =>
-                         {
-                             Click_Button(s, e, sServices);
-                         };
+                    }
 
-                         ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
-                         FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-                         border.Name = "border";
-                         border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
-                         border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
-                         border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
-                         border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
-                         FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
-                         contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                         contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-                         border.AppendChild(contentPresenter);
-                         myControlTemplate.VisualTree = border;
-                         btn.Template = myControlTemplate;
+                    try
+                    {
+                        var buttonMenu = buttonMenuList.Where(s=>s.ParentId == null && s.ButtonType == 2).ToList();
+                        buttonMenu.ForEach(b =>
+                        {
+                            SService sServices = eqContext.SServices.First(f => f.Id == b.SServiceId);
+                            Button btn = new Button();
+                            btn.Name = "button" + Btn_idx;
+                            btn.Content = b.ButtonName;
+                            btn.HorizontalAlignment = HorizontalAlignment.Center;
+                            btn.VerticalAlignment = VerticalAlignment.Top;
+                            btn.Height = 75;
+                            btn.Width = 200;
+                            btn.Margin = new Thickness(0, 18, 32, 0);
+                            btn.Background = new SolidColorBrush(Color.FromRgb(255, 250, 255));
+                            btn.BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 55));
+                            btn.FontFamily = new FontFamily("Area");
+                            btn.FontSize = 25;
+                            btn.Foreground = new SolidColorBrush(Color.FromRgb(135, 98, 27));
+                            DropShadowEffect shadowEffect = new DropShadowEffect();
+                            shadowEffect.Color = Color.FromRgb(22, 22, 22);
+                            shadowEffect.Direction = 315;
+                            shadowEffect.ShadowDepth = 3;
+                            btn.Effect = shadowEffect;
 
-                         StackPanel stackPanelBtn = new StackPanel();
-                         stackPanelBtn.Orientation = Orientation.Vertical;
-                         stackPanelBtn.HorizontalAlignment = HorizontalAlignment.Center;
-                         stackPanelBtn.Children.Add(btn);
-                         Menu_Buttnos.Children.Add(stackPanelBtn);
-                     }
-                 });
+                            btn.Click += (s, e) =>
+                        {
+                                    Click_Button(s, e, sServices);
+                                };
 
+                            ControlTemplate myControlTemplate = new ControlTemplate(typeof(Button));
+                            FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
+                            border.Name = "border";
+                            border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Border.BackgroundProperty));
+                            border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Border.BorderBrushProperty));
+                            border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Border.BorderThicknessProperty));
+                            border.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+                            FrameworkElementFactory contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+                            contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                            contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                            border.AppendChild(contentPresenter);
+                            myControlTemplate.VisualTree = border;
+                            btn.Template = myControlTemplate;
+
+                            StackPanel stackPanelBtn = new StackPanel();
+                            stackPanelBtn.Orientation = Orientation.Vertical;
+                            stackPanelBtn.HorizontalAlignment = HorizontalAlignment.Center;
+                            stackPanelBtn.Children.Add(btn);
+                            Menu_Buttnos.Children.Add(stackPanelBtn);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
                 #endregion
 
                 #region Режим работы 
@@ -407,7 +437,7 @@ namespace QE
                      // меню и кнопки  Предварительная запись
                      eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                      {
-                         if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
+                         if (b.ParentId == null) // null - Меню. 2 - Кнопка
                          {
                              #region создаем кнопку перехода на меню 
                              Button btnMenu = new Button();
@@ -444,7 +474,7 @@ namespace QE
                              #endregion
 
                              //все кнопки этого меню
-                             var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
+                             var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId);
 
                              //создаем кнопки меню
                              List<SService> sServices = new List<SService>();
@@ -1646,7 +1676,7 @@ namespace QE
 
                                     eqContext.SOfficeTerminalButtons.Where(s => s.SOfficeTerminal.IpAddress == Ip).OrderBy(o => o.ButtonType).ToList().ForEach(b =>
                                     {
-                                        if (b.ButtonType == 1) // 1 - Меню. 2 - Кнопка
+                                        if (b.ParentId == null) // null - Меню. 2 - Кнопка
                                         {
                                             //создаем кнопку перехода на меню
                                             Button btnMenu = new Button();
@@ -1682,7 +1712,7 @@ namespace QE
                                             btnMenu.Template = myControlTemplate;
 
                                             //все кнопки этого меню
-                                            var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId && q.ButtonType != 1);
+                                            var SOfficeTerminalButton = eqContext.SOfficeTerminalButtons.Where(q => q.SOfficeTerminalId == b.SOfficeTerminalId && q.ParentId == b.ParentId);
 
                                             //Заголовок меню
                                             TextBlock textBlockMenu = new TextBlock();
@@ -1819,7 +1849,7 @@ namespace QE
                                             wrapPanelPriooritetMenu.Children.Add(btnMenu);
                                         }
                                         else
-                                        if (b.ParentId == 0)
+                                        if (b.ParentId == 1)
                                         {
                                             SService sServices = eqContext.SServices.First(f => f.Id == b.SServiceId);
                                             Button btn = new Button();

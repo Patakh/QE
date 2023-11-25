@@ -12,7 +12,6 @@ public class Client
     public static async Task SendMessageAsync(string message,string IpTerminal)
     {
         EqContext eqContext = new EqContext();
-
         var windows = eqContext.SOfficeWindows.Where(x => x.SOfficeId == eqContext.SOfficeTerminals.First(g => g.IpAddress == IpTerminal).SOfficeId);
 
          if (windows.Any())
@@ -25,8 +24,7 @@ public class Client
                  {
                      using (TcpClient client = new TcpClient())
                      {
-                         await client.ConnectAsync(IPAddress.Parse(x.WindowIp), 1234);
-
+                         await client.ConnectAsync(IPAddress.Parse(x.WindowIp), 1234); 
                          using (NetworkStream stream = client.GetStream())
                          {
                              byte[] buffer = Encoding.UTF8.GetBytes(message);
