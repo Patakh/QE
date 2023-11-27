@@ -82,18 +82,15 @@ namespace QE
 
                     try
                     {
-                        var buttonsMain = buttonMenuList.Where(s => s.ParentId == null).ToList();
+                        var buttonsMain = buttonMenuList.Where(s => s.ParentId == null && s.ButtonType == 1).ToList();
                         Menu(Menu_Buttnos, buttonsMain);
 
                         void Menu(WrapPanel Menu_Buttnos, List<SOfficeTerminalButton> buttonList)
                         {
                             if (buttonList.Any())
-                                 
-                                buttonList.Where(f=>f.ButtonType==1).ToList().ForEach(c =>
+                            {
+                                buttonList.ForEach(c =>
                                          {
-                                             ButtonMenu btnMenu = new ButtonMenu(c);
-                                             Menu_Buttnos.Children.Add(btnMenu);
-
                                              //Заголовок меню
                                              HeaderMenu warpPanelHeadMenu = new HeaderMenu(c.ButtonName);
                                              Buttnos.Children.Add(warpPanelHeadMenu);
@@ -103,25 +100,9 @@ namespace QE
                                              wrapPanel.Orientation = Orientation.Horizontal;
                                              wrapPanel.Visibility = Visibility.Collapsed;
                                              wrapPanel.MaxWidth = 800;
-                                             wrapPanel.Background = new SolidColorBrush(Colors.Aqua);
 
-                                             //чисто кнопки меню
-                                             var SOfficeTerminalButton = buttonMenuList.Where(s => s.ParentId == c.Id && s.ButtonType == 2).ToList();
-                                             if (SOfficeTerminalButton.Any())
-                                             {
-                                                 SOfficeTerminalButton.ForEach(button =>
-                                                 {
-                                                     SService sServices = eqContext.SServices.First(f => f.Id == button.SServiceId);
-
-                                                     Button btn = new ButtonAction(button.ButtonName, sServices, Ip);
-
-                                                     wrapPanel.Children.Add(btn);
-
-                                                 });
-
-                                                 Buttnos.Children.Add(wrapPanel);
-
-                                             }
+                                             ButtonMenu btnMenu = new ButtonMenu(c);
+                                             Menu_Buttnos.Children.Add(btnMenu);
 
                                              btnMenu.Click += (s, e) =>
                                              {
@@ -131,15 +112,32 @@ namespace QE
                                                  Buttnos.Visibility = Visibility.Visible;
                                                  Menu_Buttnos.Visibility = Visibility.Collapsed;
                                              };
+                                              
+                                             var buttonMenu = buttonMenuList.Where(b=> b.ParentId == c.Id).ToList();
 
-                                             //меню в меню
-                                             var SOfficeTerminalMenuInMenu = buttonMenuList.Where(s => s.ParentId == c.Id && s.ButtonType == 1).ToList();
-                                             if (SOfficeTerminalMenuInMenu.Any())
+                                             if (buttonMenu.Any())
                                              {
-                                                 Menu(wrapPanel, SOfficeTerminalMenuInMenu);
+                                                 buttonMenu.ForEach(bm =>
+                                                 {
+                                                     if (bm.ButtonType == 2) //2-кнопка
+                                                     {
+                                                         SService sServices = eqContext.SServices.First(f => f.Id == bm.SServiceId);
+
+                                                         Button btn = new ButtonAction(bm.ButtonName, sServices, Ip);
+
+                                                         wrapPanel.Children.Add(btn);
+                                                     };
+
+                                                     if (bm.ButtonType == 1)
+                                                     {
+                                                         Menu(wrapPanel, new List<SOfficeTerminalButton> { bm });
+                                                     }
+                                                 });
                                              }
 
+                                             Buttnos.Children.Add(wrapPanel);
                                          });
+                            }
                         }
                     }
                     catch (Exception ex)
